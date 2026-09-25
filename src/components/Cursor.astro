@@ -1,0 +1,82 @@
+---
+// Курсор включается только на устройствах с мышью.
+---
+
+<div class="cursor" data-cursor-el aria-hidden="true">
+  <span class="cursor__ring" data-cursor-ring>
+    <span class="cursor__label" data-cursor-label></span>
+  </span>
+  <span class="cursor__dot" data-cursor-dot></span>
+</div>
+
+<style>
+  .cursor {
+    display: none;
+  }
+  :global(html.has-cursor) .cursor {
+    display: block;
+  }
+  .cursor__dot,
+  .cursor__ring {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 300;
+    pointer-events: none;
+    border-radius: 50%;
+  }
+  /* difference: курсор сам становится тёмным на светлом и светлым на тёмном */
+  .cursor__dot {
+    width: 8px;
+    height: 8px;
+    margin: -4px 0 0 -4px;
+    background: #fff;
+    mix-blend-mode: difference;
+  }
+  .cursor__ring {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    mix-blend-mode: difference;
+    transition:
+      width 0.45s var(--ease),
+      height 0.45s var(--ease),
+      margin 0.45s var(--ease),
+      background-color 0.35s,
+      border-color 0.35s;
+  }
+  .cursor__label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--ink);
+    opacity: 0;
+    transition: opacity 0.25s;
+    white-space: nowrap;
+  }
+  :global(html.cursor-label) .cursor__ring {
+    width: 96px;
+    height: 96px;
+    margin: -48px 0 0 -48px;
+    background: var(--lime);
+    border-color: var(--lime);
+    mix-blend-mode: normal;
+  }
+  :global(html.cursor-label) .cursor__label {
+    opacity: 1;
+  }
+  :global(html.cursor-hover) .cursor__ring {
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    border-color: #fff;
+  }
+  :global(html.cursor-down) .cursor__ring {
+    width: 28px;
+    height: 28px;
+    margin: -14px 0 0 -14px;
+  }
+</style>

@@ -1,0 +1,28 @@
+---
+/** Несколько «парящих» кадров 9:16 на фоне секции. Двигаются с разной скоростью при прокрутке. */
+interface Frame {
+  x: string;
+  y: string;
+  w?: number;
+  r?: number;
+  kind?: 'line' | 'lime' | 'ink';
+  speed?: number;
+  hideMobile?: boolean;
+}
+interface Props {
+  frames: Frame[];
+}
+const { frames } = Astro.props;
+---
+
+{
+  frames.map((f) => (
+    <span
+      class={`deco float-frame float-frame--${f.kind ?? 'line'} ${f.hideMobile ? 'float-frame--hide-m' : ''}`}
+      style={`left:${f.x};top:${f.y};--w:${f.w ?? 64}px;--r:${f.r ?? 0}deg`}
+      data-float
+      data-speed={f.speed ?? 0.4}
+      aria-hidden="true"
+    />
+  ))
+}

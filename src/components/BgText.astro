@@ -1,0 +1,24 @@
+---
+/** Огромное контурное слово на фоне секции. Плывёт вбок при прокрутке. */
+interface Props {
+  text: string;
+  top?: string;
+  bottom?: string;
+  align?: 'start' | 'center' | 'end';
+  dir?: 1 | -1;
+  solid?: boolean;
+}
+const { text, top, bottom, align = 'start', dir = 1, solid = false } = Astro.props;
+const pos = [top ? `top:${top}` : '', bottom ? `bottom:${bottom}` : ''].filter(Boolean).join(';');
+const alignMap = { start: 'flex-start', center: 'center', end: 'flex-end' };
+---
+
+<div
+  class={`deco bgtext ${solid ? 'bgtext--solid' : ''}`}
+  style={`${pos};--align:${alignMap[align]}`}
+  data-bgtext
+  data-dir={dir}
+  aria-hidden="true"
+>
+  <span>{text}</span>
+</div>

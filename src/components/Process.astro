@@ -1,0 +1,139 @@
+---
+import { site, pad } from '../content/site';
+const { process } = site;
+import BgText from './BgText.astro';
+---
+
+<section class="deco-host process sage sheet" id="process">
+  <span class="deco dots" style="--dx:20%;--dy:80%" aria-hidden="true"></span>
+  <BgText text="шаг за шагом" bottom="4%" dir={-1} />
+
+  <div class="wrap process__grid">
+    <h2 class="section-title process__title">{process.title}</h2>
+
+    <div class="process__steps">
+      <ol class="process__list" role="list">
+        {
+          process.steps.map((step, i) => (
+            <li class="step" data-step>
+              <span class="step__dot" aria-hidden="true">{pad(i + 1)}</span>
+              <div class="step__body">
+                <h3 class="step__title">{step.title}</h3>
+                <p class="step__text">{step.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .process {
+    background: var(--sage);
+    padding: clamp(96px, 12vw, 170px) 0 clamp(64px, 8vw, 110px);
+  }
+  .process__grid {
+    display: grid;
+    gap: 48px;
+  }
+  @media (min-width: 1000px) {
+    .process__grid {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: clamp(48px, 6vw, 96px);
+      align-items: start;
+    }
+    .process__title {
+      position: sticky;
+      top: 120px;
+    }
+  }
+  .process__title {
+    max-width: 11ch;
+  }
+  @media (min-width: 1000px) {
+    /* «сотрудничество» — длинное слово, в узкой колонке уменьшаем кегль */
+    .process__title {
+      font-size: clamp(30px, 3.3vw, 52px);
+    }
+  }
+  .process__steps {
+    position: relative;
+    min-width: 0;
+  }
+  .process__list {
+    display: grid;
+    gap: clamp(36px, 5vw, 64px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .step {
+    --gap: clamp(36px, 5vw, 64px);
+    position: relative;
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+  /* Соединительная линия до следующего шага. Заполняется, когда шаг пройден */
+  .step:not(:last-child)::before,
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 23px;
+    top: 48px;
+    bottom: calc(-1 * var(--gap));
+    width: 2px;
+    background: var(--line-dark);
+  }
+  .step:not(:last-child)::after {
+    background: var(--ink);
+    transform-origin: top;
+    transform: scaleY(var(--fill, 0));
+  }
+  .step__dot {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--sage);
+    box-shadow: inset 0 0 0 2px var(--ink);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    transition:
+      background-color 0.4s var(--ease),
+      color 0.4s;
+  }
+  .step.is-active .step__dot {
+    background: var(--ink);
+    color: var(--lime);
+  }
+  .step__title {
+    padding-top: 6px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(24px, 3vw, 40px);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+  }
+  .step__text {
+    margin-top: 10px;
+    max-width: 34ch;
+    font-size: clamp(16px, 1.3vw, 19px);
+    color: #4d5350;
+  }
+  .process__note {
+    margin-top: clamp(40px, 5vw, 64px);
+    padding: 20px 22px;
+    border-radius: 18px;
+    background: var(--paper);
+    max-width: 48ch;
+    font-size: 15px;
+  }
+</style>

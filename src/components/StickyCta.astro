@@ -1,0 +1,54 @@
+---
+import { site } from '../content/site';
+// Кнопка связи, закреплённая внизу экрана на телефоне.
+// Появляется после первого экрана и прячется в финальном блоке.
+---
+
+<div class="sticky-cta" data-sticky-cta>
+  <a href={site.manager.telegram} target="_blank" rel="noopener" class="sticky-cta__btn">
+    <span>{site.cta}</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.5 3.5 2.8 10.7c-1 .4-1 1.8.1 2.1l4.6 1.4 1.8 5.6c.3.9 1.4 1.1 2 .4l2.6-2.6 4.7 3.4c.8.6 1.9.1 2.1-.8L23.9 5c.2-1.1-1.3-1.9-2.4-1.5ZM9.6 14.1l8.8-6.9-7 7.9-.4 3.1-1.4-4.1Z" /></svg>
+  </a>
+</div>
+
+<style>
+  .sticky-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 95;
+    padding: 12px var(--pad) calc(12px + env(safe-area-inset-bottom, 0px));
+    pointer-events: none;
+    transform: translateY(130%);
+    transition: transform 0.6s var(--ease);
+  }
+  .sticky-cta.is-visible {
+    transform: none;
+  }
+  .sticky-cta__btn {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 56px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--lime);
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: 0 16px 40px -12px rgba(16, 20, 20, 0.55);
+  }
+  .sticky-cta__btn svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+  }
+  @media (min-width: 900px) {
+    .sticky-cta {
+      display: none;
+    }
+  }
+</style>

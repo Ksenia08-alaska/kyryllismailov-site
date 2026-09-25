@@ -1,0 +1,68 @@
+---
+// Счётчик 00 → 50: отсылка к пакету. Показывается один раз за сессию.
+---
+
+<div class="preloader" data-preloader aria-hidden="true">
+  <div class="preloader__count">
+    <span data-preloader-num>00</span>
+  </div>
+  <div class="preloader__meta">
+    <span>Reels</span>
+    <span class="preloader__bar"><span data-preloader-bar></span></span>
+  </div>
+</div>
+
+<noscript><style>.preloader{display:none!important}</style></noscript>
+
+<style>
+  .preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    display: none;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--pad);
+    background: var(--lime);
+    color: var(--ink);
+  }
+  :global(html.js) .preloader {
+    display: flex;
+  }
+  :global(html.no-preloader) .preloader {
+    display: none;
+  }
+  .preloader__count {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(120px, 34vw, 440px);
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+  .preloader__meta {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 24px;
+    font-weight: 600;
+  }
+  .preloader__bar {
+    position: relative;
+    flex: 1;
+    height: 2px;
+    background: rgba(16, 20, 20, 0.2);
+  }
+  .preloader__bar span {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .preloader {
+      display: none !important;
+    }
+  }
+</style>

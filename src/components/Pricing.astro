@@ -1,0 +1,281 @@
+---
+import { site } from '../content/site';
+const { pricing, offer } = site;
+const { calc } = pricing;
+const defaultN = Math.ceil(offer.price / calc.default);
+// «1 новой продажи», «2 новых продаж» — после слова «достаточно»
+const salesWord = (n: number) => (n % 10 === 1 && n % 100 !== 11 ? 'новой продажи' : 'новых продаж');
+import BgText from './BgText.astro';
+import Floats from './Floats.astro';
+---
+
+<section class="deco-host pricing lime sheet" id="pricing">
+  <BgText text="$600" top="8%" align="end" />
+  <Floats
+    frames={[
+      { x: '44%', y: '70%', w: 58, r: -12, kind: 'ink', speed: 0.6, hideMobile: true },
+    ]}
+  />
+
+  <div class="wrap pricing__grid">
+    <div class="pricing__copy">
+      <h2 class="section-title">{pricing.title}</h2>
+      <p class="pricing__big">
+        <span class="pricing__num">${offer.perReel}</span>
+        <span class="pricing__per">за ролик</span>
+      </p>
+      <p class="pricing__formula">
+        ${offer.price} ÷ {offer.quantity} роликов внутри пакета
+      </p>
+      <p class="pricing__text">{pricing.text}</p>
+      <p class="pricing__note">{pricing.note}</p>
+    </div>
+
+    <div class="calc" data-calc data-price={offer.price}>
+      <h3 class="calc__title">{calc.title}</h3>
+
+      <p class="calc__label" id="calc-label">{calc.label}</p>
+      <div class="calc__presets" role="group" aria-labelledby="calc-label">
+        {
+          calc.presets.map((v) => (
+            <button
+              type="button"
+              class={`calc__preset ${v === calc.default ? 'is-active' : ''}`}
+              data-calc-preset={v}
+              aria-pressed={v === calc.default ? 'true' : 'false'}
+            >
+              ${v}
+            </button>
+          ))
+        }
+        <div class="calc__field">
+          <span class="calc__currency" aria-hidden="true">$</span>
+          <input
+            id="calc-margin"
+            class="calc__input"
+            type="text"
+            inputmode="decimal"
+            autocomplete="off"
+            placeholder={calc.custom}
+            aria-label={`${calc.custom}, в долларах`}
+            aria-describedby="calc-hint"
+            data-calc-input
+          />
+        </div>
+      </div>
+      <p class="calc__hint" id="calc-hint">{calc.hint}</p>
+
+      <!-- Результат для примера по умолчанию виден сразу, даже без JS -->
+      <div class="calc__result" aria-live="polite">
+        <p class="calc__empty" data-calc-empty hidden>{calc.empty}</p>
+        <div class="calc__answer" data-calc-answer>
+          <p class="calc__before">{calc.before}</p>
+          <p class="calc__line">
+            <span class="calc__n" data-calc-n>{defaultN}</span>
+            <span class="calc__answer-text" data-calc-text>{salesWord(defaultN)}</span>
+          </p>
+        </div>
+      </div>
+
+      <p class="calc__disclaimer">{calc.disclaimer}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pricing {
+    padding: clamp(96px, 12vw, 170px) 0;
+  }
+  .pricing__grid {
+    display: grid;
+    gap: 48px;
+  }
+  @media (min-width: 1000px) {
+    .pricing__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(48px, 6vw, 96px);
+      align-items: center;
+    }
+  }
+  .pricing__copy {
+    min-width: 0;
+  }
+  .pricing__big {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 14px;
+    margin-top: clamp(28px, 4vw, 48px);
+  }
+  .pricing__num {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(72px, 13vw, 180px);
+    line-height: 0.85;
+    letter-spacing: -0.07em;
+    color: var(--ink);
+  }
+  .pricing__per {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(18px, 2vw, 28px);
+    letter-spacing: -0.03em;
+  }
+  .pricing__formula {
+    margin-top: 18px;
+    font-weight: 600;
+  }
+  .pricing__text {
+    margin-top: 10px;
+    max-width: 40ch;
+    color: #2a302d;
+  }
+  .pricing__note {
+    margin-top: 20px;
+    max-width: 44ch;
+    font-size: 14px;
+    color: #3f4542;
+  }
+
+  /* ── Калькулятор ───────────────────────── */
+  .calc {
+    min-width: 0;
+    padding: clamp(22px, 3vw, 40px);
+    border-radius: var(--radius-l);
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 30px 60px -30px rgba(16, 20, 20, 0.35);
+  }
+  .calc__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(20px, 2vw, 28px);
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+  }
+  .calc__label {
+    margin-top: 22px;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .calc__presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .calc__preset {
+    min-height: 48px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: inset 0 0 0 1px var(--line-dark);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+  }
+  @media (hover: hover) {
+    .calc__preset:not(.is-active):hover {
+      background: var(--paper-2);
+    }
+  }
+  .calc__preset.is-active {
+    background: var(--ink);
+    color: var(--lime);
+    box-shadow: none;
+  }
+  .calc__field {
+    position: relative;
+    flex: 1 1 140px;
+    min-width: 0;
+  }
+  .calc__currency {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    translate: 0 -50%;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    color: #8e948d;
+    pointer-events: none;
+  }
+  .calc__input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px 0 34px;
+    border: 1px solid var(--line-dark);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .calc__input::placeholder {
+    font-family: var(--font-text);
+    font-weight: 500;
+    color: #9aa09a;
+  }
+  .calc__input:focus {
+    outline: none;
+    border-color: var(--ink);
+    box-shadow: 0 0 0 3px var(--lime);
+  }
+  .calc__hint {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #5c625e;
+  }
+  .calc__result {
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    margin-top: 22px;
+    padding: 20px 22px;
+    border-radius: 18px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .calc__empty {
+    font-weight: 600;
+  }
+  .calc__empty[hidden],
+  .calc__answer[hidden] {
+    display: none;
+  }
+  .calc__before {
+    font-size: 14px;
+    color: rgba(245, 242, 235, 0.75);
+  }
+  .calc__line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    margin-top: 6px;
+  }
+  .calc__n {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(44px, 5.4vw, 68px);
+    line-height: 0.9;
+    letter-spacing: -0.06em;
+    color: var(--lime);
+    font-variant-numeric: tabular-nums;
+  }
+  .calc__answer-text {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(18px, 1.8vw, 24px);
+    letter-spacing: -0.03em;
+  }
+  .calc__disclaimer {
+    margin-top: 14px;
+    font-size: 13px;
+    color: #5c625e;
+  }
+</style>

@@ -1,0 +1,271 @@
+---
+/**
+ * Видео «как в Reels»: сразу играет без звука, кнопка звука,
+ * пауза по нажатию и тонкая полоса перемотки.
+ * Заполняет родительский блок целиком — вставляется в телефон или карточку.
+ */
+import { mediaOrNull } from '../lib/media';
+
+interface Props {
+  src: string | null;
+  /** Облегчённое видео для телефонов (необязательно) */
+  mobile?: string | null;
+  poster?: string | null;
+  title: string;
+  cta?: string;
+}
+const { src, mobile, poster, title, cta = 'Включить звук' } = Astro.props;
+const file = mediaOrNull(src);
+const fileMobile = mediaOrNull(mobile);
+const cover = mediaOrNull(poster);
+---
+
+{
+  file ? (
+    <div class="live" data-live>
+      <!-- Если есть мобильная версия, адрес подставляет скрипт: телефону — лёгкое видео, компьютеру — полное -->
+      <video
+        class="live__video"
+        src={fileMobile ? undefined : file}
+        data-src={file}
+        data-src-mobile={fileMobile ?? undefined}
+        poster={cover ?? undefined}
+        muted
+        loop
+        playsinline
+        disablepictureinpicture
+        preload="metadata"
+        aria-label={title}
+        data-live-video
+      />
+      <span class="live__shade" aria-hidden="true" />
+
+      <!-- Нажатие по видео — пауза / продолжить -->
+      <button type="button" class="live__tap" aria-label="Пауза" data-live-tap />
+      <span class="live__flash" aria-hidden="true" data-live-flash>
+        <svg class="i-play" width="26" height="26" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5-11-6.5Z" /></svg>
+        <svg class="i-pause" width="26" height="26" viewBox="0 0 24 24"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" /></svg>
+      </span>
+
+      <button type="button" class="live__sound" aria-label={cta} data-live-sound>
+        <svg class="i-off" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm15.6 3 2.2-2.2-1.4-1.4-2.2 2.2-2.2-2.2-1.4 1.4 2.2 2.2-2.2 2.2 1.4 1.4 2.2-2.2 2.2 2.2 1.4-1.4-2.2-2.2Z" /></svg>
+        <svg class="i-on" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4Zm-2.5-8.8v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6Z" /></svg>
+        <span class="live__sound-text">{cta}</span>
+      </button>
+
+      <div
+        class="live__seek"
+        role="slider"
+        tabindex="0"
+        aria-label="Перемотка видео"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+        data-live-seek
+      >
+        <span class="live__fill" data-live-fill />
+      </div>
+    </div>
+  ) : (
+    <div class="live live--empty" aria-hidden="true">
+      <span class="live__ph" />
+      <span class="live__soon">Видео скоро появится</span>
+    </div>
+  )
+}
+
+<style>
+  .live {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    color: var(--paper);
+    isolation: isolate;
+  }
+  .live__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+    background: var(--graphite);
+  }
+  .live__shade {
+    position: absolute;
+    inset: 60% 0 0;
+    z-index: -1;
+    background: linear-gradient(to top, rgba(10, 13, 13, 0.6), transparent);
+    pointer-events: none;
+  }
+  .live__tap {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    cursor: pointer;
+  }
+  /* Значок паузы / плей по центру, как в Reels */
+  .live__flash {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    border-radius: 50%;
+    background: rgba(16, 20, 20, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
+    transition:
+      opacity 0.3s,
+      transform 0.4s var(--ease);
+  }
+  .live__flash svg {
+    fill: currentColor;
+  }
+  .live__flash .i-play,
+  .live.is-paused .live__flash .i-pause {
+    display: none;
+  }
+  .live__flash .i-pause,
+  .live.is-paused .live__flash .i-play {
+    display: block;
+  }
+  .live.is-paused .live__flash {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Кнопка звука: сначала подписана, через пару секунд сворачивается в круг */
+  .live__sound {
+    position: absolute;
+    right: 14px;
+    bottom: 26px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    height: 42px;
+    padding: 0 12px;
+    gap: 8px;
+    border-radius: 999px;
+    background: var(--lime);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 13px;
+    white-space: nowrap;
+    box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.6);
+    animation: live-pulse 2.4s var(--ease) infinite;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+  }
+  .live__sound svg {
+    flex: none;
+    fill: currentColor;
+  }
+  .live__sound-text {
+    display: inline-block;
+    max-width: 140px;
+    overflow: hidden;
+    transition:
+      max-width 0.5s var(--ease),
+      opacity 0.3s,
+      margin 0.5s var(--ease);
+  }
+  .live.is-compact .live__sound-text,
+  .live.is-sound .live__sound-text {
+    max-width: 0;
+    opacity: 0;
+    margin-left: -8px;
+  }
+  .live__sound .i-on,
+  .live.is-sound .live__sound .i-off {
+    display: none;
+  }
+  .live.is-sound .live__sound .i-on {
+    display: block;
+  }
+  .live.is-sound .live__sound {
+    background: rgba(16, 20, 20, 0.5);
+    color: var(--paper);
+    animation: none;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  @keyframes live-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(211, 250, 106, 0.55); }
+    60% { box-shadow: 0 0 0 12px rgba(211, 250, 106, 0); }
+  }
+
+  /* Тонкая полоса перемотки по низу, при наведении — толще и лаймовая */
+  .live__seek {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    height: 20px;
+    cursor: pointer;
+    touch-action: none;
+  }
+  .live__seek::before,
+  .live__fill {
+    position: absolute;
+    left: 16px;
+    bottom: 10px;
+    height: 3px;
+    border-radius: 3px;
+    transition:
+      height 0.2s,
+      bottom 0.2s,
+      background-color 0.2s;
+  }
+  .live__seek::before {
+    content: '';
+    right: 16px;
+    background: rgba(245, 242, 235, 0.3);
+  }
+  .live__fill {
+    width: 0;
+    background: var(--paper);
+  }
+  .live__seek:hover::before,
+  .live__seek:hover .live__fill,
+  .live__seek.is-drag::before,
+  .live__seek.is-drag .live__fill {
+    height: 5px;
+    bottom: 9px;
+  }
+  .live__seek:hover .live__fill,
+  .live__seek.is-drag .live__fill,
+  .live__seek:focus-visible .live__fill {
+    background: var(--lime);
+  }
+
+  .live__ph {
+    position: absolute;
+    inset: -30%;
+    background:
+      radial-gradient(35% 28% at 40% 35%, rgba(211, 250, 106, 0.4), transparent 70%),
+      linear-gradient(165deg, #33403d, var(--graphite) 55%, #0c1010);
+  }
+  .live__soon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(245, 242, 235, 0.1);
+    font-size: 12px;
+    color: var(--smoke);
+    white-space: nowrap;
+  }
+</style>

@@ -1,0 +1,457 @@
+---
+import { site, formatNumber } from '../content/site';
+import { mediaOrNull } from '../lib/media';
+const { stats } = site;
+const screens = stats.screens.map((s) => ({ ...s, src: mediaOrNull(s.src) }));
+const max = (bars: { value: number }[]) => Math.max(...bars.map((b) => b.value));
+const [main, ...rest] = stats.items;
+---
+
+<section class="deco-host stats dark sheet" id="stats" data-theme="dark" data-spot-host>
+  <span class="deco dots" style="--dx:15%;--dy:20%" aria-hidden="true"></span>
+  <span class="deco spot" aria-hidden="true"></span>
+
+  <div class="wrap">
+    <div class="stats__head">
+      <h2 class="section-title">{stats.title}</h2>
+      <p class="stats__period">{stats.period}</p>
+    </div>
+
+    <div class="stats__row">
+      <div class="stats__main">
+    <!-- Главная цифра: считается вместе со скроллом — вниз растёт, вверх убывает -->
+        <div class="big" data-big>
+          <span class="big__num" data-count-scrub={main.value} data-decimals={main.decimals}>
+            {formatNumber(main.value, main.decimals)}
+          </span>
+          <span class="big__label">{main.label} за 30 дней</span>
+        </div>
+        <ul class="stats__grid" role="list">
+        {
+          rest.map((it) => (
+            <li class="stat">
+              <span class="stat__value">
+                <span class="stat__num" data-count={it.value} data-decimals={it.decimals}>
+                  {formatNumber(it.value, it.decimals)}
+                </span>
+                {it.unit && <span class="stat__unit">{it.unit}</span>}
+              </span>
+              <span class="stat__label">{it.label}</span>
+            </li>
+          ))
+        }
+      </ul>
+      </div>
+
+      <!-- Доказательства: скриншоты в телефоне с вкладками. По нажатию — во весь экран -->
+      <div class="proof" data-proof>
+        <div class="proof__tabs" role="tablist" aria-label={stats.screensLabel}>
+          {
+            screens.map((sc, i) => (
+              <button
+                type="button"
+                role="tab"
+                class={`proof__tab ${i === 0 ? 'is-on' : ''}`}
+                aria-selected={i === 0 ? 'true' : 'false'}
+                data-proof-tab={i}
+              >
+                {sc.tab}
+              </button>
+            ))
+          }
+        </div>
+        <div class="proof__phone">
+          {
+            screens.map((sc, i) =>
+              sc.src ? (
+                <button
+                  type="button"
+                  class={`proof__shot ${i === 0 ? 'is-on' : ''}`}
+                  data-proof-shot={i}
+                  data-lightbox={sc.src}
+                  data-lightbox-alt={sc.alt}
+                  aria-label={`Открыть скриншот: ${sc.alt}`}
+                  tabindex={i === 0 ? 0 : -1}
+                >
+                  <img src={sc.src} alt="" loading="lazy" decoding="async" />
+                </button>
+              ) : (
+                <span class={`proof__shot proof__shot--ph ${i === 0 ? 'is-on' : ''}`} data-proof-shot={i} aria-hidden="true" />
+              ),
+            )
+          }
+          <span class="proof__zoom" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M10 3a7 7 0 0 1 5.6 11.2l4.6 4.6-1.4 1.4-4.6-4.6A7 7 0 1 1 10 3Zm0 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm1 2v2h2v2h-2v2H9v-2H7V9h2V7h2Z" /></svg>
+            Увеличить
+          </span>
+        </div>
+        <p class="proof__label">{stats.screensLabel}</p>
+      </div>
+    </div>
+
+    <!-- Кто смотрит: полоски растут при появлении -->
+    <div class="aud__head">
+      <h3 class="aud__title">{stats.audience.title}</h3>
+      <p class="aud__hint">{stats.audience.hint}</p>
+    </div>
+    <ul class="aud" role="list">
+      {
+        stats.audience.groups.map((g) => (
+          <li class="aud__card" data-aud>
+            <p class="aud__name">{g.name}</p>
+            <p class="aud__lead">
+              <b>{g.leadValue}</b> {g.lead}
+            </p>
+            <ul class="aud__bars" role="list">
+              {g.bars.map((b) => (
+                <li class="aud__row">
+                  <span class="aud__label">{b.label}</span>
+                  <span class="aud__track">
+                    <i class="aud__fill" data-aud-fill style={`--w:${(b.value / max(g.bars)) * 100}%`} />
+                  </span>
+                  <span class="aud__val">{formatNumber(b.value, 1)}%</span>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="stats__note">{stats.note}</p>
+  </div>
+</section>
+
+<style>
+  .stats {
+    padding: clamp(100px, 12vw, 170px) 0 clamp(90px, 11vw, 150px);
+  }
+  .stats__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px 40px;
+  }
+  .stats__head .section-title {
+    max-width: 10ch;
+  }
+  .stats__period {
+    max-width: 28ch;
+    color: var(--smoke);
+    font-size: 15px;
+  }
+
+  /* ── Большая цифра ─────────────────────── */
+  .big {
+    container-type: inline-size;
+    display: grid;
+    gap: 6px;
+    padding-bottom: clamp(24px, 2.6vw, 36px);
+    border-bottom: 1px solid var(--line);
+  }
+  .big__num {
+    font-family: var(--font-display);
+    font-weight: 800;
+    /* Размер от ширины блока — число всегда в одну строку */
+    font-size: clamp(40px, 17cqi, 190px);
+    line-height: 0.85;
+    letter-spacing: -0.065em;
+    color: var(--lime);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .big__label {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(18px, 2vw, 28px);
+    letter-spacing: -0.03em;
+  }
+
+  /* ── Две цифры и скриншоты ─────────────── */
+  /* Слева цифры, справа телефон со скриншотами — одним плотным блоком */
+  .stats__row {
+    display: grid;
+    gap: 48px;
+    align-items: center;
+    margin-top: clamp(36px, 4vw, 64px);
+  }
+  @media (min-width: 900px) {
+    .stats__row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: clamp(40px, 5vw, 88px);
+    }
+  }
+  .stats__main {
+    min-width: 0;
+  }
+  .stats__grid {
+    margin-top: clamp(24px, 2.6vw, 36px) !important;
+  }
+  .stats__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px clamp(16px, 3vw, 48px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+  .stat__value {
+    display: flex;
+    align-items: baseline;
+    gap: 0 4px;
+  }
+  .stat__num {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(30px, 4.4vw, 64px);
+    line-height: 1;
+    letter-spacing: -0.055em;
+    color: var(--paper);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .stat__unit {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(20px, 2.8vw, 40px);
+    color: var(--paper);
+  }
+  .stat__label {
+    max-width: 24ch;
+    font-size: 15px;
+    color: rgba(245, 242, 235, 0.72);
+  }
+
+  /* ── Телефон со скриншотами ─────────────── */
+  .proof {
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+    justify-self: center;
+  }
+  .proof__tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 999px;
+    background: var(--graphite);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .proof__tab {
+    min-height: 36px;
+    padding: 0 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(245, 242, 235, 0.7);
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+  }
+  .proof__tab.is-on {
+    background: var(--lime);
+    color: var(--ink);
+  }
+  /* Автопереключение: под активной вкладкой тонкая полоска отсчитывает время до следующей */
+  .proof__tab {
+    position: relative;
+    overflow: hidden;
+  }
+  .proof.is-auto .proof__tab.is-on::after {
+    content: '';
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 5px;
+    height: 2px;
+    border-radius: 2px;
+    background: rgba(16, 20, 20, 0.4);
+    transform-origin: left;
+    animation: proofbar var(--proof-time, 4s) linear forwards;
+  }
+  @keyframes proofbar {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  @media (hover: hover) {
+    .proof__tab:not(.is-on):hover {
+      color: var(--paper);
+    }
+  }
+  .proof__phone {
+    position: relative;
+    width: clamp(220px, 21vw, 280px);
+    aspect-ratio: 9 / 16.5;
+    padding: 8px;
+    border-radius: 36px;
+    background: #050707;
+    box-shadow:
+      0 40px 80px -30px rgba(0, 0, 0, 0.8),
+      0 0 0 1px rgba(245, 242, 235, 0.12),
+      inset 0 0 0 2px #1f2626;
+  }
+  .proof__shot {
+    position: absolute;
+    inset: 8px;
+    display: block;
+    border-radius: 28px;
+    overflow: hidden;
+    background: #0c0f13;
+    opacity: 0;
+    transform: scale(0.96);
+    transition:
+      opacity 0.45s,
+      transform 0.6s var(--ease);
+    pointer-events: none;
+  }
+  .proof__shot.is-on {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    cursor: zoom-in;
+  }
+  /* Скриншоты разной высоты: показываем целиком, сверху, на цвете фона Instagram */
+  .proof__shot img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: top center;
+  }
+  .proof__shot--ph {
+    background:
+      repeating-linear-gradient(135deg, rgba(245, 242, 235, 0.05) 0 8px, transparent 8px 16px),
+      var(--graphite);
+  }
+  .proof__zoom {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: var(--lime);
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 700;
+    pointer-events: none;
+  }
+  .proof__zoom svg {
+    fill: currentColor;
+  }
+  .proof__label {
+    font-size: 13px;
+    color: var(--smoke);
+  }
+
+  /* ── Кто смотрит ───────────────────────── */
+  .aud__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 10px 40px;
+    margin-top: clamp(56px, 7vw, 96px);
+  }
+  .aud__hint {
+    max-width: 44ch;
+    font-size: 15px;
+    color: rgba(245, 242, 235, 0.8);
+  }
+  .aud__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(22px, 2.4vw, 32px);
+    letter-spacing: -0.04em;
+  }
+  .aud {
+    display: grid;
+    gap: 12px;
+    margin: 22px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 900px) {
+    .aud {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+  }
+  .aud__card {
+    min-width: 0;
+    padding: clamp(20px, 2.2vw, 28px);
+    border-radius: var(--radius-l);
+    background: var(--graphite);
+  }
+  .aud__name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--smoke);
+  }
+  .aud__lead {
+    margin-top: 8px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(18px, 1.6vw, 22px);
+    letter-spacing: -0.03em;
+  }
+  .aud__lead b {
+    color: var(--lime);
+  }
+  .aud__bars {
+    display: grid;
+    gap: 10px;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .aud__row {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr) 50px;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .aud__label {
+    color: rgba(245, 242, 235, 0.8);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .aud__track {
+    height: 8px;
+    border-radius: 8px;
+    background: rgba(245, 242, 235, 0.08);
+    overflow: hidden;
+  }
+  .aud__fill {
+    display: block;
+    width: var(--w);
+    height: 100%;
+    border-radius: 8px;
+    background: var(--lime);
+    transform-origin: left;
+  }
+  .aud__row:not(:first-child) .aud__fill {
+    background: rgba(211, 250, 106, 0.55);
+  }
+  .aud__val {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+
+  .stats__note {
+    margin-top: clamp(28px, 3vw, 40px);
+    font-size: 14px;
+    color: var(--smoke);
+  }
+</style>

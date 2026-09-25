@@ -1,0 +1,252 @@
+---
+import { site } from '../content/site';
+---
+
+<header class="header" data-header>
+  <div class="header__inner">
+    <a href="#top" class="header__logo" aria-label={`${site.name}, наверх`}>
+      <span class="header__mark" aria-hidden="true"></span>
+      <span>{site.name}</span>
+    </a>
+
+    <nav class="header__nav" aria-label="Основная навигация">
+      {site.nav.map((item) => <a href={item.href} class="header__link">{item.label}</a>)}
+    </nav>
+
+    <div class="header__actions">
+      <a href={site.manager.telegram} target="_blank" rel="noopener" class="btn header__cta" data-magnetic>
+        <span class="btn__label">{site.cta}</span>
+      </a>
+      <button
+        class="header__burger"
+        type="button"
+        aria-expanded="false"
+        aria-controls="menu"
+        data-menu-toggle
+      >
+        <span class="sr-only" data-menu-label>Открыть меню</span>
+        <span class="header__burger-line header__burger-line--a"></span>
+        <span class="header__burger-line header__burger-line--b"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="menu" id="menu" data-menu hidden>
+  <nav class="menu__nav" aria-label="Меню">
+    {
+      site.nav.map((item) => (
+        <a href={item.href} class="menu__link" data-menu-link>
+          <span class="line-mask">
+            <span class="menu__text">{item.label}</span>
+          </span>
+        </a>
+      ))
+    }
+  </nav>
+  <div class="menu__contacts">
+    <a href={site.manager.telegram} target="_blank" rel="noopener">Telegram {site.manager.telegramHandle}</a>
+    <a href={site.manager.instagram} target="_blank" rel="noopener">Instagram {site.manager.instagramHandle}</a>
+  </div>
+</div>
+
+<span class="scroll-progress" aria-hidden="true" data-scroll-progress></span>
+
+<style>
+  .header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 100;
+    padding-top: env(safe-area-inset-top, 0px);
+    color: var(--ink);
+    transition:
+      transform 0.6s var(--ease),
+      color 0.4s,
+      background-color 0.4s;
+  }
+  .header.is-hidden {
+    transform: translateY(-110%);
+  }
+  .header.is-solid {
+    background: rgba(245, 242, 235, 0.8);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+  }
+  /* Над тёмными секциями шапка становится светлой */
+  .header.is-dark {
+    color: var(--paper);
+  }
+  .header.is-dark.is-solid {
+    background: rgba(16, 20, 20, 0.72);
+  }
+  .header.is-menu {
+    color: var(--ink);
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    transform: none;
+  }
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    max-width: var(--max);
+    margin-inline: auto;
+    padding: 14px var(--pad);
+  }
+  .header__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+  /* Знак: вертикальный кадр 9:16 */
+  .header__mark {
+    width: 11px;
+    height: 19px;
+    border-radius: 3px;
+    background: currentColor;
+    transition: background-color 0.4s;
+  }
+  .header.is-dark .header__mark {
+    background: var(--lime);
+  }
+  .header.is-menu .header__mark {
+    background: var(--ink);
+  }
+  .header__nav {
+    display: none;
+    gap: 32px;
+  }
+  .header__link {
+    position: relative;
+    font-weight: 500;
+    font-size: 15px;
+  }
+  .header__link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.5s var(--ease);
+  }
+  @media (hover: hover) {
+    .header__link:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+  }
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header__cta {
+    display: none;
+    min-height: 44px;
+    padding: 0 22px;
+    font-size: 15px;
+  }
+  .header__cta {
+    transition:
+      color 0.4s var(--ease),
+      background-color 0.4s;
+  }
+  .header.is-dark .header__cta {
+    --bg: var(--lime);
+    --fg: var(--ink);
+    --fill: var(--paper);
+    --fill-fg: var(--ink);
+  }
+  .header__burger {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px currentColor;
+    z-index: 2;
+  }
+  .header__burger-line {
+    position: absolute;
+    left: 13px;
+    right: 13px;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform 0.5s var(--ease);
+  }
+  .header__burger-line--a {
+    top: 18px;
+  }
+  .header__burger-line--b {
+    top: 24px;
+  }
+  .header__burger[aria-expanded='true'] .header__burger-line--a {
+    transform: translateY(3px) rotate(45deg);
+  }
+  .header__burger[aria-expanded='true'] .header__burger-line--b {
+    transform: translateY(-3px) rotate(-45deg);
+  }
+
+  @media (min-width: 900px) {
+    .header__nav {
+      display: flex;
+    }
+    .header__cta {
+      display: inline-flex;
+    }
+    .header__burger {
+      display: none;
+    }
+  }
+
+  /* ── Мобильное меню ───────────────────── */
+  .menu {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: calc(96px + env(safe-area-inset-top, 0px)) var(--pad)
+      calc(32px + env(safe-area-inset-bottom, 0px));
+    background: var(--lime);
+    color: var(--ink);
+    clip-path: inset(0 0 100% 0);
+  }
+  .menu[hidden] {
+    display: none;
+  }
+  .menu__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .menu__link {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(40px, 12vw, 72px);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+  }
+  .menu__text {
+    display: inline-block;
+  }
+  .menu__contacts {
+    display: grid;
+    gap: 10px;
+    font-weight: 600;
+  }
+  .menu__contacts a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+</style>

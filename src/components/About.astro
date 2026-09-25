@@ -1,0 +1,149 @@
+---
+import { site, marked } from '../content/site';
+import LiveVideo from './LiveVideo.astro';
+const { about } = site;
+import BgText from './BgText.astro';
+import Floats from './Floats.astro';
+---
+
+<section class="deco-host about sage" id="about">
+  <span class="deco dots" style="--dx:85%;--dy:25%" aria-hidden="true"></span>
+  <BgText text="живые ролики" top="6%" />
+  <Floats
+    frames={[
+      { x: '46%', y: '12%', w: 54, r: -14, kind: 'line', speed: 0.5, hideMobile: true },
+      { x: '88%', y: '78%', w: 70, r: 10, kind: 'ink', speed: 0.7 },
+      { x: '4%', y: '84%', w: 46, r: 8, kind: 'line', speed: 0.3 },
+    ]}
+  />
+
+  <div class="wrap about__grid">
+    <div class="about__copy">
+      <h2 class="section-title">{about.title}</h2>
+      <p class="about__text" set:html={marked(about.text)} />
+      <ul class="about__points" role="list">
+        {about.points.map((p) => <li>{p}</li>)}
+      </ul>
+
+      <a href={site.instagram} target="_blank" rel="noopener" class="about__blog">
+        <span>{about.blogLink}</span>
+        <b>{site.handle}</b>
+      </a>
+    </div>
+
+    <!-- Видео Кирилла на лаймовой подложке -->
+    <div class="about__video" data-about-video>
+      <span class="about__halo" aria-hidden="true"></span>
+      <div class="about__card">
+        <LiveVideo src={about.video.src} mobile={about.video.mobile} poster={about.video.poster} title={about.video.title} />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    position: relative;
+    padding: clamp(110px, 13vw, 180px) 0 clamp(90px, 11vw, 150px);
+    overflow: hidden;
+  }
+  .about__grid {
+    display: grid;
+    gap: 56px;
+    align-items: center;
+  }
+  @media (min-width: 1000px) {
+    .about__grid {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: clamp(40px, 5vw, 96px);
+    }
+  }
+  .about__copy {
+    min-width: 0;
+  }
+  .about__text {
+    margin-top: 22px;
+    max-width: 40ch;
+    font-size: clamp(17px, 1.5vw, 21px);
+    line-height: 1.5;
+    color: #2a302d;
+  }
+  .about__points {
+    display: grid;
+    gap: 10px;
+    margin: 26px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .about__points li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+  }
+  .about__points li::before {
+    content: '';
+    flex: none;
+    width: 10px;
+    height: 17px;
+    border-radius: 3px;
+    background: var(--ink);
+  }
+
+  .about__blog {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 32px;
+    padding: 14px 20px;
+    border-radius: 18px;
+    background: var(--paper);
+    transition:
+      background-color 0.3s,
+      translate 0.4s var(--ease);
+  }
+  .about__blog span {
+    font-size: 13px;
+    color: #4d5350;
+  }
+  .about__blog b {
+    font-size: 18px;
+  }
+  @media (hover: hover) {
+    .about__blog:hover {
+      background: var(--lime);
+      translate: 0 -3px;
+    }
+  }
+
+  /* ── Видео ─────────────────────────────── */
+  .about__video {
+    position: relative;
+    justify-self: center;
+    width: min(100%, 340px);
+  }
+  @media (max-width: 999px) {
+    .about__video {
+      width: min(76vw, 330px);
+    }
+  }
+  /* Карточка-«экран» для видео, как телефон на первом экране */
+  .about__card {
+    container-type: inline-size;
+    position: relative;
+    z-index: 1;
+    aspect-ratio: 9 / 16;
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    background: var(--ink);
+    box-shadow: 0 34px 70px -34px rgba(16, 20, 20, 0.6);
+    rotate: -2deg;
+  }
+  .about__halo {
+    position: absolute;
+    inset: 5% -9% -4% 9%;
+    border-radius: var(--radius-l);
+    background: var(--lime);
+    rotate: 5deg;
+  }
+</style>

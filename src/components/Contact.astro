@@ -1,0 +1,151 @@
+---
+import { site } from '../content/site';
+---
+
+<section class="contact sheet" id="contact" data-theme="dark">
+  <canvas class="contact__canvas" data-shader aria-hidden="true"></canvas>
+
+  <div class="wrap contact__inner">
+    <h2 class="contact__title" data-contact-title>{site.contact.title}</h2>
+    <p class="contact__lead">{site.contact.lead}</p>
+    <p class="contact__text">{site.contact.text}</p>
+
+    <div class="contact__action">
+      <a
+        href={site.manager.telegram}
+        class="contact__btn"
+        target="_blank"
+        rel="noopener"
+        data-magnetic
+        data-magnetic-strength="0.45"
+      >
+        <span class="contact__btn-label">{site.contact.cta}</span>
+      </a>
+      <div class="contact__channels">
+        <a href={site.manager.telegram} target="_blank" rel="noopener" class="contact__channel">
+          <span>Telegram</span>
+          <b>{site.manager.telegramHandle}</b>
+        </a>
+        <a href={site.manager.instagram} target="_blank" rel="noopener" class="contact__channel">
+          <span>{site.contact.secondary}</span>
+          <b>{site.manager.instagramHandle}</b>
+        </a>
+        <a href={site.instagram} target="_blank" rel="noopener" class="contact__channel contact__channel--muted">
+          <span>{site.contact.blog}</span>
+          <b>{site.handle}</b>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background:
+      radial-gradient(60% 50% at 70% 60%, rgba(211, 250, 106, 0.16), transparent 70%),
+      var(--ink);
+    padding: 140px 0 120px;
+    color: var(--paper);
+  }
+  .contact__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.2s;
+  }
+  .contact__canvas.is-ready {
+    opacity: 1;
+  }
+  .contact__inner {
+    position: relative;
+  }
+  .contact__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(40px, 9vw, 150px);
+    line-height: 0.92;
+    letter-spacing: -0.055em;
+    max-width: 9ch;
+  }
+  .contact__lead {
+    margin-top: 32px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(22px, 2.6vw, 36px);
+    letter-spacing: -0.035em;
+    color: var(--lime);
+  }
+  .contact__text {
+    margin-top: 14px;
+    max-width: 36ch;
+    font-size: clamp(17px, 1.4vw, 20px);
+    color: rgba(245, 242, 235, 0.78);
+  }
+  .contact__action {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 28px;
+    margin-top: 56px;
+  }
+  /* Круглая кнопка, которая тянется за курсором */
+  .contact__btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: clamp(150px, 16vw, 210px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--lime);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: clamp(15px, 1.3vw, 18px);
+    text-align: center;
+    line-height: 1.2;
+    padding: 24px;
+  }
+  .contact__btn-label {
+    display: inline-block;
+    max-width: 9ch;
+  }
+  .contact__channels {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+  }
+  .contact__channel {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 18px;
+    border-radius: 16px;
+    background: rgba(245, 242, 235, 0.08);
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition: background-color 0.3s;
+  }
+  .contact__channel span {
+    font-size: 13px;
+    color: var(--smoke);
+  }
+  .contact__channel b {
+    font-weight: 600;
+    font-size: 17px;
+    overflow-wrap: anywhere;
+  }
+  .contact__channel--muted b {
+    font-weight: 500;
+    color: rgba(245, 242, 235, 0.78);
+  }
+  @media (hover: hover) {
+    .contact__channel:hover {
+      background: rgba(211, 250, 106, 0.16);
+    }
+  }
+</style>

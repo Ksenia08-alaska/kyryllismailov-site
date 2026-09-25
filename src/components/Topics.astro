@@ -1,0 +1,326 @@
+---
+import { site, groupOf, pad } from '../content/site';
+const { topics, offer } = site;
+const first = topics.reels[0];
+---
+
+<section class="topics" id="topics" data-topics>
+  <div class="topics__pin" data-topics-pin>
+    <div class="wrap topics__layout">
+      <header class="topics__head">
+        <h2 class="topics__title">{topics.title}</h2>
+        <p class="topics__text">{topics.text}</p>
+
+        <div class="topics__counter" aria-hidden="true">
+          <span class="topics__num" data-topics-num>{pad(first.n)}</span>
+          <span class="topics__of">
+            <span>из {offer.quantity}</span>
+            <span class="topics__group" data-topics-group>{groupOf(first.n)}</span>
+          </span>
+        </div>
+
+        <!-- Ширина сегментов соответствует числу роликов в группе -->
+        <div class="topics__progress" aria-hidden="true">
+          {
+            topics.groups.map((g) => (
+              <span class="topics__seg" style={`flex:${g.to - g.from + 1}`}>
+                <span class="topics__seg-fill" data-seg data-from={g.from} data-to={g.to} />
+                <span class="topics__seg-label">{g.name}</span>
+              </span>
+            ))
+          }
+        </div>
+      </header>
+
+      <div class="topics__viewport" data-topics-viewport>
+        <ol class="topics__track" data-topics-track role="list">
+          {
+            topics.reels.map((r, i) => (
+              <li
+                class="reel"
+                data-reel
+                data-n={pad(r.n)}
+                data-group={groupOf(r.n)}
+                data-cursor={`Reel ${pad(r.n)}`}
+                style={`--i:${i}`}
+              >
+                <div class="reel__screen">
+                  {r.video ? (
+                    <video
+                      class="reel__video"
+                      src={r.video}
+                      muted
+                      loop
+                      playsinline
+                      preload="none"
+                    />
+                  ) : (
+                    <span class="reel__placeholder" aria-hidden="true" />
+                  )}
+                  <span class="reel__top">
+                    <span class="reel__n">{pad(r.n)}</span>
+                    <span class="reel__group">{groupOf(r.n)}</span>
+                  </span>
+                  <p class="reel__q">{r.question}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .topics {
+    position: relative;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .topics__pin {
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding: calc(84px + env(safe-area-inset-top, 0px)) 0 40px;
+    overflow: hidden;
+  }
+  .topics__layout {
+    display: grid;
+    gap: 28px;
+    width: 100%;
+  }
+  @media (min-width: 1000px) {
+    .topics__layout {
+      grid-template-columns: minmax(300px, 0.8fr) minmax(0, 2fr);
+      align-items: center;
+      gap: 56px;
+    }
+  }
+
+  .topics__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(28px, 3.4vw, 48px);
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+    max-width: 12ch;
+  }
+  .topics__text {
+    margin-top: 16px;
+    max-width: 36ch;
+    color: #4d5350;
+  }
+  @media (max-width: 999px) {
+    .topics__text {
+      font-size: 15px;
+    }
+  }
+  @media (max-width: 999px) and (max-height: 720px) {
+    .topics__text {
+      display: none;
+    }
+  }
+  .topics__counter {
+    display: none;
+    align-items: flex-end;
+    gap: 16px;
+    margin-top: 40px;
+  }
+  @media (min-width: 1000px) {
+    .topics__counter {
+      display: flex;
+    }
+  }
+  .topics__num {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(72px, 8vw, 120px);
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .topics__of {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-bottom: 4px;
+    font-size: 14px;
+    color: #5c625e;
+  }
+  .topics__group {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .topics__progress {
+    display: flex;
+    gap: 4px;
+    margin-top: 24px;
+    max-width: 420px;
+  }
+  .topics__seg {
+    position: relative;
+    height: 3px;
+    background: var(--line-dark);
+    border-radius: 2px;
+  }
+  .topics__seg-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    border-radius: 2px;
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+  .topics__seg-label {
+    position: absolute;
+    top: 12px;
+    left: 0;
+    font-size: 11px;
+    color: #5c625e;
+    white-space: nowrap;
+  }
+  @media (max-width: 1100px) {
+    .topics__seg-label {
+      display: none;
+    }
+  }
+
+  .topics__viewport {
+    min-width: 0;
+  }
+  .topics__track {
+    display: flex;
+    gap: clamp(14px, 1.6vw, 24px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: max-content;
+    will-change: transform;
+  }
+
+  /* ── Карточка-телефон ───────────────────── */
+  /* Ширина карточки зависит и от высоты экрана, чтобы на низких экранах
+     телефон целиком помещался и ничего не обрезалось */
+  .reel {
+    flex: 0 0 auto;
+    width: clamp(170px, min(20vw, calc((100svh - 190px) * 0.5625)), 290px);
+    color: var(--paper);
+  }
+  @media (max-width: 999px) {
+    .reel {
+      width: clamp(150px, min(58vw, calc((100svh - 330px) * 0.5625)), 250px);
+    }
+  }
+  .reel__screen {
+    container-type: inline-size;
+    position: relative;
+    aspect-ratio: 9 / 16;
+    border-radius: var(--radius-l);
+    background: var(--graphite);
+    box-shadow: inset 0 0 0 1px var(--line);
+    overflow: hidden;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(12px, 1.4vw, 18px);
+    transition: transform 0.6s var(--ease);
+  }
+  .reel__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+  }
+  /* Заглушка: медленно дышащий градиент, у каждой карточки свой угол */
+  .reel__placeholder {
+    position: absolute;
+    inset: -40%;
+    z-index: -1;
+    background:
+      radial-gradient(
+        40% 30% at 30% 30%,
+        rgba(211, 250, 106, 0.55),
+        transparent 70%
+      ),
+      radial-gradient(
+        50% 40% at 70% 70%,
+        rgba(245, 242, 235, 0.22),
+        transparent 70%
+      ),
+      linear-gradient(160deg, #2c3634, var(--graphite) 60%);
+    animation: drift 14s ease-in-out infinite alternate;
+    animation-delay: calc(var(--i) * -1.7s);
+  }
+  .reel__screen::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 55%;
+    z-index: -1;
+    background: linear-gradient(to top, rgba(16, 20, 20, 0.85), transparent);
+  }
+  .reel__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .reel__n {
+    display: inline-grid;
+    place-items: center;
+    min-width: 36px;
+    height: 26px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: var(--lime);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 12px;
+  }
+  .reel__group {
+    color: rgba(245, 242, 235, 0.8);
+  }
+  .reel__q {
+    font-family: var(--font-display);
+    font-weight: 600;
+    /* Размер текста от ширины карточки — длинные слова не вылезают */
+    font-size: clamp(13px, 8cqi, 23px);
+    hyphens: auto;
+    overflow-wrap: break-word;
+    line-height: 1.12;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  @media (hover: hover) {
+    .reel:hover .reel__screen {
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes drift {
+    0% {
+      transform: translate(0, 0) rotate(0deg) scale(1);
+    }
+    100% {
+      transform: translate(8%, -6%) rotate(40deg) scale(1.15);
+    }
+  }
+
+  /* Без анимации — обычная прокрутка карточек пальцем */
+  @media (prefers-reduced-motion: reduce) {
+    .topics__viewport {
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    }
+    .reel {
+      scroll-snap-align: start;
+    }
+  }
+</style>

@@ -1,0 +1,446 @@
+/* ─────────────────────────────────────────────
+   Токены: цвета, шрифты, отступы.
+   Меняются здесь — меняется весь сайт.
+   ───────────────────────────────────────────── */
+:root {
+  --ink: #101414;
+  --graphite: #1b2020;
+  --graphite-2: #273030;
+  --paper: #f5f2eb;
+  --paper-2: #e9e4d8;
+  --lime: #d3fa6a;
+  --sage: #dde3cc;
+  --sheet-r: clamp(24px, 4vw, 48px);
+  --smoke: #8e948d;
+  --line: rgba(245, 242, 235, 0.14);
+  --line-dark: rgba(16, 20, 20, 0.16);
+
+  --font-display: 'Unbounded Variable', 'Arial Black', system-ui, sans-serif;
+  --font-text: 'Onest Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --pad: clamp(20px, 4vw, 56px);
+  --max: 1440px;
+  --radius-s: 6px;
+  --radius-l: 28px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: light;
+}
+
+/* ── База ─────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--paper);
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: 17px;
+  line-height: 1.5;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+img,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+::selection {
+  background: var(--lime);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  z-index: 200;
+  padding: 12px 18px;
+  background: var(--lime);
+  color: var(--ink);
+  border-radius: 999px;
+  transform: translateY(-200%);
+}
+.skip-link:focus {
+  transform: none;
+}
+
+/* ── Кнопки ───────────────────────────────
+   .btn          — тёмная кнопка для светлых секций
+   .btn--lime    — лаймовая кнопка для тёмных секций
+   .btn--ghost   — контурная
+   ───────────────────────────────────────── */
+.btn {
+  --bg: var(--ink);
+  --fg: var(--lime);
+  --fill: var(--lime);
+  --fill-fg: var(--ink);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 28px;
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--fg);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  isolation: isolate;
+  white-space: nowrap;
+  transition: color 0.4s var(--ease);
+}
+/* Заливка, которая «вытекает» снизу при наведении */
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--fill);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  transform: translateY(101%);
+  transition:
+    transform 0.55s var(--ease),
+    border-radius 0.55s var(--ease);
+}
+@media (hover: hover) {
+  .btn:hover {
+    color: var(--fill-fg);
+  }
+  .btn:hover::before {
+    transform: translateY(0);
+    border-radius: 0;
+  }
+}
+.btn__label {
+  display: inline-block;
+}
+.btn--lime {
+  --bg: var(--lime);
+  --fg: var(--ink);
+  --fill: var(--paper);
+  --fill-fg: var(--ink);
+}
+.btn--ghost {
+  --bg: transparent;
+  --fg: var(--ink);
+  --fill: var(--ink);
+  --fill-fg: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--line-dark);
+}
+
+/* ── Общие заголовки секций ───────────── */
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(24px, 7.4vw, 44px);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+  hyphens: manual;
+}
+@media (min-width: 768px) {
+  .section-title {
+    font-size: clamp(40px, 5vw, 68px);
+  }
+}
+.dark {
+  background: var(--ink);
+  color: var(--paper);
+}
+.lime {
+  background: var(--lime);
+  color: var(--ink);
+}
+.sage {
+  background: var(--sage);
+  color: var(--ink);
+}
+
+/* «Листы»: цветные секции со скруглённым верхом наезжают на предыдущие,
+   как карточки в стопке. Скролл превращается в смену сцен. */
+.sheet {
+  position: relative;
+  z-index: 1;
+  margin-top: calc(-1 * var(--sheet-r));
+  border-radius: var(--sheet-r) var(--sheet-r) 0 0;
+}
+.dark .btn--ghost {
+  --fg: var(--paper);
+  --fill: var(--paper);
+  --fill-fg: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+/* ── Слова и строки для анимации текста ───── */
+.line-mask {
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+/* ── Кастомный курсор скрывает системный только когда включён ── */
+html.has-cursor,
+html.has-cursor a,
+html.has-cursor button {
+  cursor: none;
+}
+
+/* ── Пока JS не запустился, анимируемые элементы не мигают ── */
+html.js [data-reveal] {
+  visibility: hidden;
+}
+
+/* ── Уменьшенное движение: всё видно сразу ── */
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal] {
+    visibility: visible;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ── Лаймовый маркер под ключевыми фразами ([[...]] в site.ts) ── */
+mark.hl {
+  color: inherit;
+  padding: 0 0.06em;
+  background: linear-gradient(var(--lime), var(--lime)) left 90% / 0% 0.45em no-repeat;
+  transition: background-size 1.1s var(--ease) 0.15s;
+}
+.dark mark.hl {
+  background-image: linear-gradient(rgba(211, 250, 106, 0.4), rgba(211, 250, 106, 0.4));
+}
+mark.hl.is-on,
+html:not(.js) mark.hl {
+  background-size: 100% 0.45em;
+}
+@media (prefers-reduced-motion: reduce) {
+  mark.hl {
+    background-size: 100% 0.45em;
+  }
+}
+
+/* ── Полоска прогресса прокрутки вверху экрана ── */
+.scroll-progress {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 120;
+  height: 3px;
+  background: var(--lime);
+  transform-origin: left;
+  transform: scaleX(0);
+  pointer-events: none;
+}
+
+/* ═══════════════ Декор фона ═══════════════
+   Секции с декором получают класс deco-host: декор лежит под контентом.
+   ───────────────────────────────────────── */
+.deco-host {
+  position: relative;
+  overflow: clip;
+}
+.deco-host > :not(.deco) {
+  position: relative;
+  z-index: 1;
+}
+.deco {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Огромное контурное слово на фоне; плывёт по горизонтали при скролле */
+.bgtext {
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: var(--align, flex-start);
+  padding-inline: var(--pad);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(110px, 21vw, 380px);
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(16, 20, 20, 0.09);
+  will-change: transform;
+}
+.dark .bgtext,
+.bgtext--light {
+  -webkit-text-stroke-color: rgba(245, 242, 235, 0.07);
+}
+.bgtext--solid {
+  color: rgba(16, 20, 20, 0.04);
+  -webkit-text-stroke: 0;
+}
+
+/* Парящие рамки-«кадры» 9:16 */
+.float-frame {
+  width: var(--w, 64px);
+  aspect-ratio: 9 / 16;
+  border-radius: calc(var(--w, 64px) * 0.16);
+  rotate: var(--r, 0deg);
+  will-change: transform;
+}
+.float-frame--line {
+  border: 1.5px solid rgba(16, 20, 20, 0.14);
+}
+.dark .float-frame--line {
+  border-color: rgba(245, 242, 235, 0.12);
+}
+.float-frame--lime {
+  background: var(--lime);
+  box-shadow: 0 18px 40px -20px rgba(16, 20, 20, 0.35);
+}
+.float-frame--ink {
+  background: var(--ink);
+  box-shadow: 0 18px 40px -20px rgba(16, 20, 20, 0.5);
+}
+.float-frame--lime::after,
+.float-frame--ink::after {
+  /* Кнопка «плей» внутри маленького кадра */
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  margin: -6px 0 0 -3px;
+  border-style: solid;
+  border-width: 6px 0 6px 10px;
+  border-color: transparent transparent transparent var(--ink);
+}
+.float-frame--ink::after {
+  border-left-color: var(--lime);
+}
+.float-frame {
+  position: absolute;
+}
+@media (max-width: 700px) {
+  .float-frame {
+    --w: 40px !important;
+  }
+  .float-frame--hide-m {
+    display: none;
+  }
+}
+
+/* Точечная сетка, растворяющаяся к краям */
+.dots {
+  inset: 0;
+  background-image: radial-gradient(rgba(16, 20, 20, 0.16) 1.2px, transparent 1.4px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(ellipse 70% 60% at var(--dx, 80%) var(--dy, 30%), #000 10%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at var(--dx, 80%) var(--dy, 30%), #000 10%, transparent 75%);
+}
+.dark .dots {
+  background-image: radial-gradient(rgba(245, 242, 235, 0.14) 1.2px, transparent 1.4px);
+}
+
+/* Световое пятно, которое следует за курсором (тёмные секции) */
+.spot {
+  inset: 0;
+  background: radial-gradient(
+    600px circle at var(--mx, 70%) var(--my, 30%),
+    rgba(211, 250, 106, 0.12),
+    transparent 60%
+  );
+  transition: opacity 0.4s;
+}
+
+/* Плёночное зерно поверх всего сайта — убирает «пластиковую» плоскость фона */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 110;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.2s steps(6) infinite;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -1%); }
+  80% { transform: translate(3%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .grain {
+    animation: none;
+  }
+}

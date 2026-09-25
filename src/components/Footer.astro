@@ -1,0 +1,75 @@
+---
+import { site } from '../content/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="wrap footer__row">
+    <p>© {year} {site.author}, {site.handle}</p>
+    <p class="footer__links">
+      Менеджер:
+      <a href={site.manager.telegram} target="_blank" rel="noopener">Telegram</a>
+      <a href={site.manager.instagram} target="_blank" rel="noopener">Instagram</a>
+    </p>
+    <a class="footer__top" href="#top">Наверх ↑</a>
+  </div>
+  <div class="footer__word" aria-hidden="true" data-footer-word>
+    {site.name.split('').map((ch) => <span>{ch}</span>)}
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--paper);
+    color: var(--ink);
+    padding-top: 56px;
+    overflow: hidden;
+  }
+  .footer__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+    align-items: center;
+    font-size: 14px;
+  }
+  .footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+  }
+  .footer__links a {
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .footer__top {
+    margin-left: auto;
+    font-weight: 600;
+  }
+  .footer__muted {
+    color: #5c625e;
+  }
+  .footer__badge {
+    margin-left: auto;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--lime);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  /* 14 букв во всю ширину экрана */
+  .footer__word {
+    display: flex;
+    justify-content: space-between;
+    padding: 4vw var(--pad) 0;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 8.4vw;
+    line-height: 0.78;
+    letter-spacing: -0.05em;
+  }
+  .footer__word span {
+    display: inline-block;
+  }
+</style>

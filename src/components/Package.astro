@@ -1,0 +1,109 @@
+---
+import { site } from '../content/site';
+const { package: pkg } = site;
+import BgText from './BgText.astro';
+import Floats from './Floats.astro';
+---
+
+<section class="deco-host package" id="package">
+  <BgText text="50 REELS" bottom="-4%" align="end" solid />
+  <Floats
+    frames={[
+      { x: '84%', y: '10%', w: 60, r: 12, kind: 'lime', speed: 0.6 },
+      { x: '72%', y: '4%', w: 40, r: -8, kind: 'line', speed: 0.3, hideMobile: true },
+    ]}
+  />
+
+  <div class="wrap">
+    <h2 class="section-title package__title">{pkg.title}</h2>
+
+    <ul class="package__list" role="list">
+      {
+        pkg.items.map((item, i) => (
+          <li class={`card ${i === 1 ? 'card--lime' : ''}`} data-card>
+            <span class={`card__big ${item.big.length > 2 ? 'card__big--word' : ''}`}>{item.big}</span>
+            <h3 class="card__title">{item.title}</h3>
+            <p class="card__text">{item.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="package__note">{pkg.note}</p>
+  </div>
+</section>
+
+<style>
+  .package {
+    background: var(--paper);
+    padding: clamp(100px, 12vw, 170px) 0 clamp(60px, 7vw, 100px);
+  }
+  .package__list {
+    display: grid;
+    gap: 14px;
+    margin: clamp(40px, 5vw, 64px) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 800px) {
+    .package__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(14px, 1.6vw, 24px);
+    }
+  }
+  .card {
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: clamp(24px, 2.6vw, 36px);
+    border-radius: var(--radius-l);
+    background: #fff;
+    box-shadow: 0 1px 0 rgba(16, 20, 20, 0.04);
+    transition:
+      translate 0.5s var(--ease),
+      rotate 0.5s var(--ease);
+  }
+  .card--lime {
+    background: var(--lime);
+  }
+  @media (hover: hover) {
+    /* translate/rotate отдельно от transform, чтобы не спорить с анимацией появления */
+    .card:hover {
+      translate: 0 -6px;
+      rotate: -0.6deg;
+    }
+  }
+  .card__big {
+    font-family: var(--font-display);
+    font-weight: 800;
+    /* Размер от ширины карточки, чтобы слово всегда помещалось */
+    font-size: clamp(52px, 34cqi, 130px);
+    line-height: 0.85;
+    letter-spacing: -0.07em;
+    white-space: nowrap;
+  }
+  .card__big--word {
+    font-size: clamp(40px, 22cqi, 96px);
+  }
+  .card__title {
+    margin-top: clamp(20px, 3vw, 44px);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(19px, 1.7vw, 24px);
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+  }
+  .card__text {
+    margin-top: 10px;
+    color: #4d5350;
+  }
+  .card--lime .card__text {
+    color: #2a302d;
+  }
+  .package__note {
+    margin-top: 24px;
+    max-width: 60ch;
+    font-size: 14px;
+    color: #5c625e;
+  }
+</style>

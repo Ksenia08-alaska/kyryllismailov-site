@@ -1,0 +1,221 @@
+---
+import { site, pad } from '../content/site';
+import Player from './Player.astro';
+const { examples } = site;
+const n = examples.items.length;
+import BgText from './BgText.astro';
+import Floats from './Floats.astro';
+---
+
+<section class="deco-host examples sheet" id="examples">
+  <BgText text="REELS" top="34%" align="center" dir={-1} />
+  <Floats
+    frames={[
+      { x: '6%', y: '20%', w: 56, r: -10, kind: 'lime', speed: 0.6, hideMobile: true },
+      { x: '90%', y: '14%', w: 48, r: 12, kind: 'line', speed: 0.4 },
+    ]}
+  />
+
+  <div class="wrap examples__head">
+    <h2 class="section-title">{examples.title}</h2>
+    <p class="examples__text">{examples.text}</p>
+  </div>
+
+  <!-- 3D-карусель: активный ролик в центре тихо играет, соседние — по бокам -->
+  <div
+    class="cf"
+    data-cf
+    tabindex="0"
+    role="region"
+    aria-roledescription="карусель"
+    aria-label="Примеры роликов. Листайте стрелками"
+  >
+    <div class="cf__stage" data-cf-stage>
+      {
+        examples.items.map((v, i) => (
+          <div
+            class="cf__item"
+            data-cf-item
+            role="group"
+            aria-roledescription="слайд"
+            aria-label={`${i + 1} из ${n}: ${v.title}`}
+          >
+            <Player src={v.src} poster={v.poster} title={v.title} hint={examples.soundHint} />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="wrap cf__bar">
+    <button type="button" class="cf__arrow" data-cf-prev aria-label="Предыдущий ролик">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.4 5.4 14 4l-8 8 8 8 1.4-1.4L8.8 12l6.6-6.6Z" /></svg>
+    </button>
+    <div class="cf__info" aria-live="polite">
+      <span class="cf__count"><b data-cf-current>01</b> / {pad(n)}</span>
+      <span class="cf__dots" aria-hidden="true">
+        {examples.items.map(() => <i data-cf-dot />)}
+      </span>
+    </div>
+    <button type="button" class="cf__arrow" data-cf-next aria-label="Следующий ролик">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.6 5.4 10 4l8 8-8 8-1.4-1.4 6.6-6.6-6.6-6.6Z" /></svg>
+    </button>
+  </div>
+
+  <div class="wrap examples__foot">
+    <a href={site.instagram} target="_blank" rel="noopener" class="btn btn--ghost" data-magnetic>
+      <span class="btn__label">{examples.more}</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .examples {
+    background: var(--paper);
+    padding: clamp(100px, 12vw, 170px) 0 clamp(80px, 10vw, 140px);
+    overflow: hidden;
+  }
+  .examples__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px 40px;
+  }
+  .examples__head .section-title {
+    max-width: 10ch;
+  }
+  .examples__text {
+    max-width: 34ch;
+    color: #4d5350;
+  }
+
+  /* ── Карусель ──────────────────────────── */
+  .cf {
+    --w: clamp(230px, 24vw, 330px);
+    position: relative;
+    margin-top: clamp(36px, 5vw, 64px);
+    perspective: 1400px;
+    outline: none;
+  }
+  @media (max-width: 999px) {
+    .cf {
+      --w: min(64vw, 290px);
+    }
+  }
+  .cf:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 8px;
+    border-radius: 12px;
+  }
+  .cf__stage {
+    position: relative;
+    height: calc(var(--w) * 16 / 9);
+    transform-style: preserve-3d;
+    touch-action: pan-y;
+    user-select: none;
+  }
+  .cf__item {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: var(--w);
+    margin-left: calc(var(--w) / -2);
+    transform-origin: 50% 50%;
+    will-change: transform;
+  }
+  /* Боковые карточки чуть приглушены, центральная — в фокусе */
+  .cf__item :global(.player) {
+    transition: filter 0.6s var(--ease);
+  }
+  .cf__item:not(.is-active) :global(.player) {
+    filter: brightness(0.62) saturate(0.8);
+  }
+  .cf__item:not(.is-active) :global(.player__icon),
+  .cf__item:not(.is-active) :global(.player__title) {
+    opacity: 0;
+  }
+  :global(html.has-cursor) .cf__item:not(.is-active) {
+    cursor: pointer;
+  }
+
+  /* До запуска скрипта — простой ряд, чтобы ничего не наезжало */
+  :global(html:not(.cf-ready)) .cf__stage {
+    display: flex;
+    gap: 16px;
+    height: auto;
+    overflow-x: auto;
+    padding: 0 var(--pad);
+  }
+  :global(html:not(.cf-ready)) .cf__item {
+    position: relative;
+    left: auto;
+    margin: 0;
+    flex: 0 0 var(--w);
+  }
+
+  /* ── Панель управления ─────────────────── */
+  .cf__bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-top: clamp(24px, 3vw, 40px);
+  }
+  .cf__arrow {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--lime);
+    transition:
+      transform 0.4s var(--ease),
+      background-color 0.3s;
+  }
+  .cf__arrow svg {
+    width: 22px;
+    fill: currentColor;
+  }
+  @media (hover: hover) {
+    .cf__arrow:hover {
+      transform: scale(1.08);
+    }
+  }
+  .cf__info {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    min-width: 90px;
+  }
+  .cf__count {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
+  }
+  .cf__dots {
+    display: flex;
+    gap: 6px;
+  }
+  .cf__dots i {
+    width: 6px;
+    height: 6px;
+    border-radius: 6px;
+    background: var(--line-dark);
+    transition:
+      width 0.4s var(--ease),
+      background-color 0.3s;
+  }
+  .cf__dots i.is-on {
+    width: 22px;
+    background: var(--ink);
+  }
+
+  .examples__foot {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+  }
+</style>

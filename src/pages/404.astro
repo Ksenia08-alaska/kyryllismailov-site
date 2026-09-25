@@ -1,0 +1,187 @@
+---
+import Base from '../layouts/Base.astro';
+import Cursor from '../components/Cursor.astro';
+import Floats from '../components/Floats.astro';
+import { site } from '../content/site';
+---
+
+<!-- Страница «не найдено»: в стиле сайта, 0 в «404» — это ролик, которого нет -->
+<Base title={`Страница не найдена — ${site.name}`} noindex>
+  <Cursor />
+  <main class="nf deco-host" id="main">
+    <span class="deco dots" style="--dx:70%;--dy:40%" aria-hidden="true"></span>
+    <Floats
+      frames={[
+        { x: '8%', y: '14%', w: 56, r: -12, kind: 'lime', speed: 0.5 },
+        { x: '86%', y: '70%', w: 64, r: 10, kind: 'line', speed: 0.3 },
+        { x: '78%', y: '12%', w: 44, r: 6, kind: 'line', speed: 0.4, hideMobile: true },
+      ]}
+    />
+
+    <div class="nf__inner">
+      <a href="/" class="nf__logo" aria-label={`${site.name}, на главную`}>
+        <span class="nf__mark" aria-hidden="true"></span>
+        {site.name}
+      </a>
+
+      <h1 class="nf__code">
+        <span>4</span>
+        <span class="nf__reel" aria-hidden="true">
+          <span class="nf__rec"><i></i>REC</span>
+          <span class="nf__play"></span>
+          <span class="nf__caption">Ролик не найден</span>
+        </span>
+        <span class="sr-only">0</span>
+        <span>4</span>
+      </h1>
+
+      <p class="nf__title">Такой страницы нет</p>
+      <p class="nf__text">Возможно, ссылка устарела или в ней опечатка. Всё главное — на основной странице.</p>
+
+      <div class="nf__actions">
+        <a href="/" class="btn" data-magnetic><span class="btn__label">На главную</span></a>
+        <a href={site.manager.telegram} target="_blank" rel="noopener" class="btn btn--ghost" data-magnetic>
+          <span class="btn__label">{site.cta}</span>
+        </a>
+      </div>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .nf {
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: 48px var(--pad);
+    background:
+      radial-gradient(60% 50% at 80% 10%, rgba(211, 250, 106, 0.55), transparent 70%),
+      radial-gradient(50% 45% at 10% 90%, rgba(185, 215, 196, 0.6), transparent 70%),
+      var(--paper);
+    text-align: center;
+  }
+  .nf__inner {
+    display: grid;
+    justify-items: center;
+    max-width: 640px;
+  }
+  .nf__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .nf__mark {
+    width: 11px;
+    height: 19px;
+    border-radius: 3px;
+    background: var(--ink);
+  }
+  .nf__code {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 20px);
+    margin-top: clamp(28px, 5vw, 48px);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(110px, 24vw, 240px);
+    line-height: 0.85;
+    letter-spacing: -0.06em;
+  }
+  /* «0» — телефон с роликом, которого нет */
+  .nf__reel {
+    position: relative;
+    display: block;
+    width: 0.62em;
+    aspect-ratio: 9 / 16;
+    border-radius: 0.09em;
+    background: var(--ink);
+    box-shadow: 0 30px 60px -30px rgba(16, 20, 20, 0.6);
+    rotate: -6deg;
+    animation: nf-float 5s ease-in-out infinite;
+  }
+  .nf__rec {
+    position: absolute;
+    left: 8%;
+    top: 7%;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-text);
+    font-size: clamp(9px, 1.6vw, 13px);
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--paper);
+  }
+  .nf__rec i {
+    display: block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ff4a3d;
+    animation: nf-blink 1.2s steps(2, jump-none) infinite;
+  }
+  .nf__play {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    width: 30%;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: var(--lime);
+  }
+  .nf__play::after {
+    content: '';
+    position: absolute;
+    left: 40%;
+    top: 30%;
+    border-style: solid;
+    border-width: 0.06em 0 0.06em 0.1em;
+    border-color: transparent transparent transparent var(--ink);
+  }
+  .nf__caption {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: 8%;
+    font-family: var(--font-text);
+    font-size: clamp(9px, 1.6vw, 13px);
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.2;
+    color: var(--paper);
+    text-align: left;
+  }
+  .nf__title {
+    margin-top: clamp(28px, 4vw, 40px);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(24px, 3.4vw, 40px);
+    letter-spacing: -0.04em;
+  }
+  .nf__text {
+    margin-top: 12px;
+    max-width: 38ch;
+    color: #4d5350;
+  }
+  .nf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  @keyframes nf-float {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -10px; }
+  }
+  @keyframes nf-blink {
+    50% { opacity: 0.15; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nf__reel { animation: none; }
+  }
+</style>

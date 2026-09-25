@@ -1,0 +1,61 @@
+---
+// Просмотр скриншота во весь экран. Закрывается кнопкой, кликом по фону и Escape.
+---
+
+<div class="lightbox" data-lightbox-root role="dialog" aria-modal="true" aria-label="Скриншот" hidden>
+  <button type="button" class="lightbox__close" data-lightbox-close aria-label="Закрыть">
+    <span></span><span></span>
+  </button>
+  <img class="lightbox__img" data-lightbox-img alt="" />
+  <p class="lightbox__caption" data-lightbox-caption></p>
+</div>
+
+<style>
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 400;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 14px;
+    padding: 64px var(--pad) 32px;
+    background: rgba(16, 20, 20, 0.92);
+    color: var(--paper);
+  }
+  .lightbox[hidden] {
+    display: none;
+  }
+  .lightbox__img {
+    max-width: min(100%, 460px);
+    max-height: calc(100svh - 140px);
+    border-radius: 18px;
+    object-fit: contain;
+  }
+  .lightbox__caption {
+    font-size: 14px;
+    color: var(--smoke);
+    text-align: center;
+  }
+  .lightbox__close {
+    position: absolute;
+    top: calc(16px + env(safe-area-inset-top, 0px));
+    right: 16px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--paper);
+  }
+  .lightbox__close span {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    top: 23px;
+    height: 2px;
+    background: var(--ink);
+    transform: rotate(45deg);
+  }
+  .lightbox__close span + span {
+    transform: rotate(-45deg);
+  }
+</style>
