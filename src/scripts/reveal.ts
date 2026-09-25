@@ -6,12 +6,18 @@ import { SplitText } from 'gsap/SplitText';
  * прокрутили вниз — появились, вернулись выше блока — спрятались и появятся снова.
  */
 export function initReveals() {
-  // Лаймовый маркер прорисовывается под фразой каждый раз, когда она появляется на экране
+  // Лаймовый маркер прорисовывается под фразой каждый раз, когда её блок появляется на экране.
+  // Следим за самим заголовком/абзацем: анимация текста пересобирает слова внутри, а блок остаётся.
   const io = new IntersectionObserver(
-    (entries) => entries.forEach((e) => e.target.classList.toggle('is-on', e.isIntersecting)),
+    (entries) => entries.forEach((e) => e.target.classList.toggle('hl-on', e.isIntersecting)),
     { rootMargin: '0px 0px -15% 0px' },
   );
-  document.querySelectorAll('mark.hl').forEach((m) => io.observe(m));
+  const hosts = new Set<Element>();
+  document.querySelectorAll('mark.hl').forEach((m) => {
+    const host = m.closest('h1, h2, h3, p, li');
+    if (host) hosts.add(host);
+  });
+  hosts.forEach((h) => io.observe(h));
 
   // Заголовки секций поднимаются по строкам из-под «маски»
   document.querySelectorAll<HTMLElement>('.section-title').forEach((el) => {

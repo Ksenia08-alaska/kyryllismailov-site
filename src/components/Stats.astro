@@ -1,5 +1,5 @@
 ---
-import { site, formatNumber } from '../content/site';
+import { site, formatNumber, marked } from '../content/site';
 import { mediaOrNull } from '../lib/media';
 const { stats } = site;
 const screens = stats.screens.map((s) => ({ ...s, src: mediaOrNull(s.src) }));
@@ -13,7 +13,7 @@ const [main, ...rest] = stats.items;
 
   <div class="wrap">
     <div class="stats__head">
-      <h2 class="section-title">{stats.title}</h2>
+      <h2 class="section-title" set:html={marked(stats.title)} />
       <p class="stats__period">{stats.period}</p>
     </div>
 

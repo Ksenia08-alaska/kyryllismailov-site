@@ -1,5 +1,5 @@
 ---
-import { site } from '../content/site';
+import { site, marked } from '../content/site';
 const { pricing, offer } = site;
 const { calc } = pricing;
 const defaultN = Math.ceil(offer.price / calc.default);
@@ -19,7 +19,7 @@ import Floats from './Floats.astro';
 
   <div class="wrap pricing__grid">
     <div class="pricing__copy">
-      <h2 class="section-title">{pricing.title}</h2>
+      <h2 class="section-title" set:html={marked(pricing.title)} />
       <p class="pricing__big">
         <span class="pricing__num">${offer.perReel}</span>
         <span class="pricing__per">за ролик</span>

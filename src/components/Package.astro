@@ -1,5 +1,5 @@
 ---
-import { site } from '../content/site';
+import { site, marked } from '../content/site';
 const { package: pkg } = site;
 import BgText from './BgText.astro';
 import Floats from './Floats.astro';
@@ -15,7 +15,7 @@ import Floats from './Floats.astro';
   />
 
   <div class="wrap">
-    <h2 class="section-title package__title">{pkg.title}</h2>
+    <h2 class="section-title package__title" set:html={marked(pkg.title)} />
 
     <ul class="package__list" role="list">
       {

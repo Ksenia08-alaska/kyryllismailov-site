@@ -1,5 +1,5 @@
 ---
-import { site, groupOf, pad } from '../content/site';
+import { site, groupOf, pad, marked } from '../content/site';
 const { topics, offer } = site;
 const first = topics.reels[0];
 ---
@@ -8,7 +8,7 @@ const first = topics.reels[0];
   <div class="topics__pin" data-topics-pin>
     <div class="wrap topics__layout">
       <header class="topics__head">
-        <h2 class="topics__title">{topics.title}</h2>
+        <h2 class="topics__title" set:html={marked(topics.title)} />
         <p class="topics__text">{topics.text}</p>
 
         <div class="topics__counter" aria-hidden="true">
@@ -30,7 +30,6 @@ const first = topics.reels[0];
             ))
           }
         </div>
-        <p class="topics__swipe" aria-hidden="true">Листайте карточки →</p>
       </header>
 
       <div class="topics__viewport" data-topics-viewport>
@@ -106,6 +105,11 @@ const first = topics.reels[0];
     line-height: 1.02;
     letter-spacing: -0.045em;
     max-width: 12ch;
+  }
+  @media (max-width: 999px) {
+    .topics__title {
+      font-size: clamp(30px, 9vw, 48px);
+    }
   }
   .topics__text {
     margin-top: 16px;
@@ -311,51 +315,6 @@ const first = topics.reels[0];
     }
     100% {
       transform: translate(8%, -6%) rotate(40deg) scale(1.15);
-    }
-  }
-
-  .topics__swipe {
-    display: none;
-    margin-top: 14px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #5c625e;
-  }
-  /* ── Телефон: лента, которую листают пальцем, без закрепления ── */
-  @media (max-width: 999px) {
-    .topics__pin {
-      min-height: 0;
-      padding: clamp(72px, 16vw, 110px) 0 clamp(64px, 14vw, 96px);
-      overflow: visible;
-    }
-    .topics__text {
-      display: block !important;
-    }
-    .topics__swipe {
-      display: block;
-    }
-    .topics__viewport {
-      margin-inline: calc(-1 * var(--pad));
-      padding: 8px var(--pad) 12px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-padding-inline: var(--pad);
-      scrollbar-width: none;
-      overscroll-behavior-x: contain;
-    }
-    .topics__viewport::-webkit-scrollbar {
-      display: none;
-    }
-    .topics__track {
-      padding-right: var(--pad);
-    }
-    .reel {
-      width: min(62vw, 250px) !important;
-      scroll-snap-align: start;
-    }
-    /* Карточка пониже, чтобы целиком помещалась на экране вместе с заголовком */
-    .reel__screen {
-      aspect-ratio: 4 / 5;
     }
   }
 

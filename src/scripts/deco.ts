@@ -7,13 +7,16 @@ import { gsap } from 'gsap';
  * — в тёмных секциях световое пятно следует за курсором.
  */
 export function initDeco() {
+  // На телефоне слова двигаются едва заметно, чтобы не уезжать за край экрана
+  const small = window.matchMedia('(max-width: 999px)').matches;
   gsap.utils.toArray<HTMLElement>('[data-bgtext]').forEach((el) => {
     const dir = Number(el.dataset.dir ?? 1);
     gsap.fromTo(
       el,
-      { xPercent: dir * 8 },
+      { xPercent: small ? 0 : dir * 8, yPercent: small ? 12 : 0 },
       {
-        xPercent: -dir * 14,
+        xPercent: small ? 0 : -dir * 14,
+        yPercent: small ? -12 : 0,
         ease: 'none',
         scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: 0.8 },
       },

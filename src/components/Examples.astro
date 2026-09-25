@@ -1,5 +1,5 @@
 ---
-import { site, pad } from '../content/site';
+import { site, pad, marked } from '../content/site';
 import Player from './Player.astro';
 const { examples } = site;
 const n = examples.items.length;
@@ -17,7 +17,7 @@ import Floats from './Floats.astro';
   />
 
   <div class="wrap examples__head">
-    <h2 class="section-title">{examples.title}</h2>
+    <h2 class="section-title" set:html={marked(examples.title)} />
     <p class="examples__text">{examples.text}</p>
   </div>
 

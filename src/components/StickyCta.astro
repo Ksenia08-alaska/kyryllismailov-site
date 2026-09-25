@@ -26,8 +26,9 @@ import { site } from '../content/site';
   .sticky-cta.is-visible {
     transform: none;
   }
-  /* Пока открыто меню — кнопку не показываем, в меню есть своя */
-  :global(html.menu-open) .sticky-cta {
+  /* Пока открыто меню или закреплён блок «50 тем» — кнопку не показываем */
+  :global(html.menu-open) .sticky-cta,
+  :global(html.topics-pinned) .sticky-cta {
     transform: translateY(130%);
   }
   .sticky-cta__btn {

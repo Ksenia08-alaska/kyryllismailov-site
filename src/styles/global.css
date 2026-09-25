@@ -203,7 +203,8 @@ p {
 .section-title {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(24px, 7.4vw, 44px);
+  /* На телефоне заголовки крупные и плотные — чтобы читались как акцент */
+  font-size: clamp(32px, 10.2vw, 56px);
   line-height: 1.02;
   letter-spacing: -0.045em;
   text-wrap: balance;
@@ -285,7 +286,7 @@ mark.hl {
 .dark mark.hl {
   background-image: linear-gradient(rgba(211, 250, 106, 0.4), rgba(211, 250, 106, 0.4));
 }
-mark.hl.is-on,
+.hl-on mark.hl,
 html:not(.js) mark.hl {
   background-size: 100% 0.45em;
 }
@@ -293,6 +294,29 @@ html:not(.js) mark.hl {
   mark.hl {
     background-size: 100% 0.45em;
   }
+}
+/* В крупных заголовках маркер тоньше и ниже — как росчерк под словом */
+.section-title mark.hl,
+.topics__title mark.hl,
+.hero__title mark.hl,
+.contact__title mark.hl {
+  background-position: left 92%;
+  background-size: 0% 0.3em;
+  padding: 0;
+}
+.hl-on.section-title mark.hl,
+.hl-on.topics__title mark.hl,
+.hl-on.hero__title mark.hl,
+.hl-on.contact__title mark.hl,
+html:not(.js) .section-title mark.hl {
+  background-size: 100% 0.3em;
+}
+/* На лаймовом фоне — светлый маркер, на тёмном — полупрозрачный лайм */
+.lime mark.hl {
+  background-image: linear-gradient(var(--paper), var(--paper));
+}
+.contact mark.hl {
+  background-image: linear-gradient(rgba(211, 250, 106, 0.45), rgba(211, 250, 106, 0.45));
 }
 
 /* ── Полоска прогресса прокрутки вверху экрана ── */
@@ -342,6 +366,18 @@ html:not(.js) mark.hl {
   color: transparent;
   -webkit-text-stroke: 1.5px rgba(16, 20, 20, 0.09);
   will-change: transform;
+}
+/* Телефон и планшет: слово целиком по ширине экрана, длинные фразы — в две строки */
+@media (max-width: 999px) {
+  .bgtext {
+    white-space: normal;
+    font-size: min(30vw, calc((100vw - 2 * var(--pad)) / (var(--len, 5) * 0.95)));
+    line-height: 0.86;
+    text-align: var(--talign, left);
+  }
+  .bgtext span {
+    max-width: 100%;
+  }
 }
 .dark .bgtext,
 .bgtext--light {

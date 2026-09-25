@@ -19,7 +19,7 @@ import Floats from './Floats.astro';
 
   <div class="wrap about__grid">
     <div class="about__copy">
-      <h2 class="section-title">{about.title}</h2>
+      <h2 class="section-title" set:html={marked(about.title)} />
       <p class="about__text" set:html={marked(about.text)} />
       <ul class="about__points" role="list">
         {about.points.map((p) => <li>{p}</li>)}

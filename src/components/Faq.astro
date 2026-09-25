@@ -1,5 +1,5 @@
 ---
-import { site } from '../content/site';
+import { site, marked } from '../content/site';
 const { faq } = site;
 import BgText from './BgText.astro';
 ---
@@ -8,7 +8,7 @@ import BgText from './BgText.astro';
   <BgText text="?" top="10%" align="start" solid />
 
   <div class="wrap faq__grid">
-    <h2 class="section-title faq__title">{faq.title}</h2>
+    <h2 class="section-title faq__title" set:html={marked(faq.title)} />
 
     <ul class="faq__list" role="list">
       {

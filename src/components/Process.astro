@@ -1,5 +1,5 @@
 ---
-import { site, pad } from '../content/site';
+import { site, pad, marked } from '../content/site';
 const { process } = site;
 import BgText from './BgText.astro';
 ---
@@ -9,7 +9,7 @@ import BgText from './BgText.astro';
   <BgText text="шаг за шагом" bottom="4%" dir={-1} />
 
   <div class="wrap process__grid">
-    <h2 class="section-title process__title">{process.title}</h2>
+    <h2 class="section-title process__title" set:html={marked(process.title)} />
 
     <div class="process__steps">
       <ol class="process__list" role="list">
