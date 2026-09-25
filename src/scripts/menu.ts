@@ -9,7 +9,9 @@ export function initMenu(lenis: LenisInstance | null) {
   const labelEl = document.querySelector<HTMLElement>('[data-menu-label]');
   if (!toggle || !menu || !header) return;
 
-  const texts = menu.querySelectorAll<HTMLElement>('.menu__text');
+  const links = menu.querySelectorAll<HTMLElement>('[data-menu-link]');
+  const bottom = menu.querySelector<HTMLElement>('[data-menu-bottom]');
+  const html = document.documentElement;
   let open = false;
 
   const setOpen = (value: boolean) => {
@@ -21,6 +23,9 @@ export function initMenu(lenis: LenisInstance | null) {
       menu.hidden = false;
       header.classList.add('is-menu');
       header.classList.remove('is-hidden');
+      // Страница под меню не прокручивается, нижняя кнопка связи прячется
+      html.classList.add('menu-open');
+      html.style.overflow = 'hidden';
       lenis?.stop();
       gsap
         .timeline()
@@ -30,13 +35,16 @@ export function initMenu(lenis: LenisInstance | null) {
           { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'expo.inOut' },
         )
         .fromTo(
-          texts,
-          { yPercent: 110 },
-          { yPercent: 0, duration: 0.8, ease: 'expo.out', stagger: 0.07 },
-          '-=0.35',
-        );
+          links,
+          { y: 40, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.8, ease: 'expo.out', stagger: 0.06 },
+          '-=0.4',
+        )
+        .fromTo(bottom, { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8, ease: 'expo.out' }, '-=0.6');
       menu.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
     } else {
+      html.classList.remove('menu-open');
+      html.style.overflow = '';
       lenis?.start();
       gsap.to(menu, {
         clipPath: 'inset(0% 0% 100% 0%)',

@@ -47,11 +47,12 @@ export const site = {
     perReel: Math.round((price / quantity) * 100) / 100,
   },
 
+  // hint — подпись под пунктом в мобильном меню
   nav: [
-    { label: 'Примеры', href: '#examples' },
-    { label: 'Что входит', href: '#package' },
-    { label: 'Цена', href: '#pricing' },
-    { label: 'Вопросы', href: '#faq' },
+    { label: 'Примеры', href: '#examples', hint: 'Ролики, снятые для заказчика' },
+    { label: 'Что входит', href: '#package', hint: '50 роликов, съёмка и публикации' },
+    { label: 'Цена', href: '#pricing', hint: '$600 и расчёт окупаемости' },
+    { label: 'Вопросы', href: '#faq', hint: 'Коротко о главном' },
   ],
 
   // 01 — Первый экран

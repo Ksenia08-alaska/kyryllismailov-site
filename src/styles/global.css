@@ -124,7 +124,12 @@ p {
   border-radius: 999px;
   transform: translateY(-200%);
 }
-.skip-link:focus {
+/* Показывается только при навигации с клавиатуры (Tab), а не после касаний на телефоне */
+.skip-link:not(:focus-visible) {
+  opacity: 0;
+  pointer-events: none;
+}
+.skip-link:focus-visible {
   transform: none;
 }
 

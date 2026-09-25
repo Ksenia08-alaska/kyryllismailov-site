@@ -30,6 +30,7 @@ const first = topics.reels[0];
             ))
           }
         </div>
+        <p class="topics__swipe" aria-hidden="true">Листайте карточки →</p>
       </header>
 
       <div class="topics__viewport" data-topics-viewport>
@@ -310,6 +311,51 @@ const first = topics.reels[0];
     }
     100% {
       transform: translate(8%, -6%) rotate(40deg) scale(1.15);
+    }
+  }
+
+  .topics__swipe {
+    display: none;
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #5c625e;
+  }
+  /* ── Телефон: лента, которую листают пальцем, без закрепления ── */
+  @media (max-width: 999px) {
+    .topics__pin {
+      min-height: 0;
+      padding: clamp(72px, 16vw, 110px) 0 clamp(64px, 14vw, 96px);
+      overflow: visible;
+    }
+    .topics__text {
+      display: block !important;
+    }
+    .topics__swipe {
+      display: block;
+    }
+    .topics__viewport {
+      margin-inline: calc(-1 * var(--pad));
+      padding: 8px var(--pad) 12px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--pad);
+      scrollbar-width: none;
+      overscroll-behavior-x: contain;
+    }
+    .topics__viewport::-webkit-scrollbar {
+      display: none;
+    }
+    .topics__track {
+      padding-right: var(--pad);
+    }
+    .reel {
+      width: min(62vw, 250px) !important;
+      scroll-snap-align: start;
+    }
+    /* Карточка пониже, чтобы целиком помещалась на экране вместе с заголовком */
+    .reel__screen {
+      aspect-ratio: 4 / 5;
     }
   }
 

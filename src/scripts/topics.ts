@@ -1,9 +1,11 @@
 import { gsap } from 'gsap';
 
 /**
- * Секция тем: закрепляется, карточки едут горизонтально,
- * счётчик показывает номер текущей темы из 50,
- * полоски групп заполняются пропорционально (10/15/15/10).
+ * Секция тем.
+ * Компьютер: секция закрепляется, карточки едут горизонтально вслед за скроллом.
+ * Телефон: обычная лента, которую листают пальцем, — ничего не закрепляется
+ * и нижняя кнопка связи не перекрывает карточки.
+ * Полоски групп заполняются пропорционально (10/15/15/10).
  */
 export function initTopics(reduced: boolean) {
   const section = document.querySelector<HTMLElement>('[data-topics]');
@@ -31,6 +33,24 @@ export function initTopics(reduced: boolean) {
     return;
   }
 
+  const mm = gsap.matchMedia();
+
+  // ── Телефон и планшет: лента с пальцевой прокруткой ──
+  mm.add('(max-width: 999px)', () => {
+    const onScroll = () => {
+      const max = viewport.scrollWidth - viewport.clientWidth;
+      const pos = max > 0 ? (viewport.scrollLeft / max) * (values.length - 1) : 0;
+      const i = Math.min(values.length - 1, Math.floor(pos));
+      const next = values[Math.min(values.length - 1, i + 1)];
+      setSegments(values[i] + (next - values[i]) * (pos - i));
+    };
+    viewport.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => viewport.removeEventListener('scroll', onScroll);
+  });
+
+  // ── Компьютер: закреплённая секция ──
+  mm.add('(min-width: 1000px)', () => {
   // Карточки обрезаются только слева, справа уходят за край экрана
   viewport.style.clipPath = 'inset(-60px -100vw -60px 0)';
 
@@ -87,4 +107,9 @@ export function initTopics(reduced: boolean) {
 
   setActive(0);
   setSegments(values[0]);
+
+  return () => {
+    viewport.style.clipPath = '';
+  };
+  });
 }
