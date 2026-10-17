@@ -5,6 +5,9 @@ export function initFaq(reduced: boolean) {
   document.querySelectorAll<HTMLElement>('[data-faq]').forEach((item) => {
     const btn = item.querySelector<HTMLButtonElement>('[data-faq-btn]')!;
     const panel = item.querySelector<HTMLElement>('[data-faq-panel]')!;
+    // В разметке ответы открыты (для поисковиков и без JS) — прячем их до клика
+    panel.hidden = true;
+    panel.classList.add('is-ready');
 
     btn.addEventListener('click', () => {
       const open = btn.getAttribute('aria-expanded') === 'true';

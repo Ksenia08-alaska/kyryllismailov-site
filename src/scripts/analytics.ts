@@ -13,11 +13,14 @@ const placeOf = (el: Element) => {
   const section = el.closest('section[id]');
   const names: Record<string, string> = {
     top: 'первый экран',
+    services: 'услуги',
+    segments: 'для кого',
     about: 'Кирилл',
     examples: 'примеры',
     stats: 'статистика',
-    package: 'что входит',
-    pricing: 'цена',
+    topics: 'темы',
+    process: 'как проходит',
+    pricing: 'цены',
     faq: 'вопросы',
     contact: 'связь',
   };

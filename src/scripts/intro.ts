@@ -5,7 +5,7 @@ import type { LenisInstance } from './smooth-scroll';
 const pad = (n: number) => String(n).padStart(2, '0');
 
 /**
- * Прелоадер считает 00 → 50, затем уезжает вверх,
+ * Прелоадер считает 00 → число роликов в пакете, затем уезжает вверх,
  * заголовок поднимается по словам, телефон «выезжает» снизу.
  */
 export function runIntro(lenis: LenisInstance | null): Promise<void> {
@@ -39,7 +39,7 @@ export function runIntro(lenis: LenisInstance | null): Promise<void> {
     gsap.set(pre, { clipPath: 'inset(0% 0% 0% 0%)' });
 
     tl.to(counter, {
-      v: 50,
+      v: Number(pre.dataset.count) || 25,
       duration: 1.5,
       ease: 'power2.inOut',
       onUpdate: () => {

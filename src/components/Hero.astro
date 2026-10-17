@@ -32,14 +32,14 @@ const slots = ['s1', 's2', 's3', 's4', 's5', 's6'];
       <!-- Цена: крупная цифра с лаймовым «маркерным» росчерком -->
       <div class="hero__price" data-hero-fade data-reveal>
         <span class="hero__price-num">
-          ${site.offer.price}
+          <span class="hero__price-from">{hero.pricePrefix}</span>${site.offer.price}
           <svg class="hero__swoosh" viewBox="0 0 220 28" preserveAspectRatio="none" aria-hidden="true">
             <path d="M4 18 C 50 6, 120 4, 216 14" data-swoosh />
           </svg>
         </span>
         <span class="hero__price-note">
-          <b>за {site.offer.quantity} Reels</b>
-          съёмка, монтаж и публикации
+          <b>{hero.priceTitle}</b>
+          {hero.priceNote}
         </span>
       </div>
 
@@ -48,7 +48,7 @@ const slots = ['s1', 's2', 's3', 's4', 's5', 's6'];
           <span class="btn__label">{site.cta}</span>
           <svg class="btn__icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.5 3.5 2.8 10.7c-1 .4-1 1.8.1 2.1l4.6 1.4 1.8 5.6c.3.9 1.4 1.1 2 .4l2.6-2.6 4.7 3.4c.8.6 1.9.1 2.1-.8L23.9 5c.2-1.1-1.3-1.9-2.4-1.5ZM9.6 14.1l8.8-6.9-7 7.9-.4 3.1-1.4-4.1Z" /></svg>
         </a>
-        <a href="#examples" class="btn btn--ghost" data-magnetic>
+        <a href={hero.secondaryHref} class="btn btn--ghost" data-magnetic>
           <span class="btn__label">{hero.secondaryCta}</span>
         </a>
       </div>
@@ -63,6 +63,7 @@ const slots = ['s1', 's2', 's3', 's4', 's5', 's6'];
           <text><textPath href="#sticker-circle" textLength="488" lengthAdjust="spacing">{hero.sticker}</textPath></text>
         </svg>
         <span class="sticker__center">
+          <span class="sticker__from">{hero.stickerPrefix}</span>
           <b>${site.offer.perReel}</b>
           <span>за ролик</span>
         </span>
@@ -257,6 +258,13 @@ const slots = ['s1', 's2', 's3', 's4', 's5', 's6'];
     stroke-width: 12;
     stroke-linecap: round;
   }
+  .hero__price-from {
+    margin-right: 0.12em;
+    font-size: 0.36em;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    vertical-align: 0.9em;
+  }
   .hero__price-note {
     display: flex;
     flex-direction: column;
@@ -347,6 +355,10 @@ const slots = ['s1', 's2', 's3', 's4', 's5', 's6'];
     font-weight: 800;
     font-size: clamp(20px, 1.9vw, 28px);
     letter-spacing: -0.05em;
+  }
+  .sticker__center .sticker__from {
+    margin: 0 0 1px;
+    font-size: 10px;
   }
   .sticker__center span {
     margin-top: 3px;

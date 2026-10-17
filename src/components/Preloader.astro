@@ -1,8 +1,9 @@
 ---
-// Счётчик 00 → 50: отсылка к пакету. Показывается один раз за сессию.
+// Счётчик 00 → число роликов в стартовом пакете (site.offer.quantity). Показывается один раз за сессию.
+import { site } from '../content/site';
 ---
 
-<div class="preloader" data-preloader aria-hidden="true">
+<div class="preloader" data-preloader data-count={site.offer.quantity} aria-hidden="true">
   <div class="preloader__count">
     <span data-preloader-num>00</span>
   </div>

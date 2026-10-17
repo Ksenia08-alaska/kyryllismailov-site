@@ -10,10 +10,10 @@ import Floats from './Floats.astro';
 ---
 
 <section class="deco-host pricing lime sheet" id="pricing">
-  <BgText text="$600" top="8%" align="end" />
+  <BgText text={`$${offer.price}`} top="8%" align="end" />
   <Floats
     frames={[
-      { x: '44%', y: '70%', w: 58, r: -12, kind: 'ink', speed: 0.6, hideMobile: true },
+      { x: '46%', y: '86%', w: 58, r: -12, kind: 'ink', speed: 0.6, hideMobile: true },
     ]}
   />
 
@@ -21,13 +21,24 @@ import Floats from './Floats.astro';
     <div class="pricing__copy">
       <h2 class="section-title" set:html={marked(pricing.title)} />
       <p class="pricing__big">
+        <span class="pricing__from">{pricing.perPrefix}</span>
         <span class="pricing__num">${offer.perReel}</span>
         <span class="pricing__per">за ролик</span>
       </p>
-      <p class="pricing__formula">
-        ${offer.price} ÷ {offer.quantity} роликов внутри пакета
-      </p>
+      <p class="pricing__formula">{pricing.formula}</p>
       <p class="pricing__text">{pricing.text}</p>
+
+      <!-- Все цены коротким списком -->
+      <dl class="pricing__list">
+        {
+          pricing.list.map((row) => (
+            <div class="pricing__row">
+              <dt>{row.name}</dt>
+              <dd>{row.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
       <p class="pricing__note">{pricing.note}</p>
     </div>
 
@@ -129,6 +140,37 @@ import Floats from './Floats.astro';
     margin-top: 10px;
     max-width: 40ch;
     color: #2a302d;
+  }
+  .pricing__from {
+    align-self: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(18px, 2vw, 28px);
+    letter-spacing: -0.03em;
+  }
+  .pricing__list {
+    max-width: 480px;
+    margin: 26px 0 0;
+    border-top: 1px solid rgba(16, 20, 20, 0.18);
+  }
+  .pricing__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2px 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(16, 20, 20, 0.18);
+  }
+  .pricing__row dt {
+    font-weight: 600;
+  }
+  .pricing__row dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.02em;
   }
   .pricing__note {
     margin-top: 20px;

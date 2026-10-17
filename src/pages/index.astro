@@ -9,6 +9,7 @@ import About from '../components/About.astro';
 import Examples from '../components/Examples.astro';
 import Stats from '../components/Stats.astro';
 import Package from '../components/Package.astro';
+import Segments from '../components/Segments.astro';
 import Topics from '../components/Topics.astro';
 import Process from '../components/Process.astro';
 import Pricing from '../components/Pricing.astro';
@@ -19,7 +20,7 @@ import StickyCta from '../components/StickyCta.astro';
 import Lightbox from '../components/Lightbox.astro';
 ---
 
-<!-- Порядок блоков — по ТЗ: результат, кто снимает, примеры, доказательства, пакет, темы, процесс, цена -->
+<!-- Порядок блоков: результат, что делаем (услуги), для кого, кто снимает, примеры, доказательства, темы, процесс, цены -->
 <Base>
   <Preloader />
   <Cursor />
@@ -27,10 +28,11 @@ import Lightbox from '../components/Lightbox.astro';
   <main id="main">
     <Hero />
     <Marquee />
+    <Package />
+    <Segments />
     <About />
     <Examples />
     <Stats />
-    <Package />
     <Topics />
     <Process />
     <Pricing />

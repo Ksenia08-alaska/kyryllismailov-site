@@ -1,0 +1,379 @@
+---
+// «Для кого мы работаем»: вкладки по типам бизнеса. Весь текст — в site.segments.
+// Без JS все вкладки показаны друг под другом, с JS — переключаются.
+import { site, marked, pad } from '../content/site';
+const { segments } = site;
+import BgText from './BgText.astro';
+---
+
+<section class="deco-host segments dark sheet" id="segments" data-segments>
+  <BgText text="для кого" top="6%" align="end" />
+
+  <div class="wrap">
+    <div class="segments__head">
+      <h2 class="section-title" set:html={marked(segments.title)} />
+      <p class="segments__text">{segments.text}</p>
+    </div>
+
+    <div class="seg__tabs" role="tablist" aria-label="Тип бизнеса">
+      {
+        segments.items.map((s, i) => (
+          <button
+            type="button"
+            class={`seg__tab ${i === 0 ? 'is-active' : ''}`}
+            role="tab"
+            id={`seg-tab-${s.id}`}
+            aria-controls={`seg-panel-${s.id}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            data-seg-tab
+          >
+            {s.tab}
+          </button>
+        ))
+      }
+    </div>
+
+    {
+      segments.items.map((s, i) => (
+        <div
+          class={`seg__panel ${i === 0 ? 'is-active' : ''}`}
+          role="tabpanel"
+          id={`seg-panel-${s.id}`}
+          aria-labelledby={`seg-tab-${s.id}`}
+          data-seg-panel
+        >
+          <div class="seg__main" data-seg-anim>
+            <h3 class="seg__nojs-title">{s.tab}</h3>
+            <p class="seg__lead">{s.lead}</p>
+            <p class="seg__label">{segments.shootLabel}</p>
+            <ol class="seg__shoot" role="list">
+              {s.shoot.map((item, k) => (
+                <li>
+                  <span>{pad(k + 1)}</span>
+                  {item}
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div class="seg__chat" data-seg-anim>
+            <p class="seg__label">{segments.askLabel}</p>
+            <div class="seg__bubbles">
+              {s.asks.map((q) => (
+                <p class="seg__bubble">{q}</p>
+              ))}
+              <p class="seg__bubble seg__bubble--answer">
+                <span class="seg__typing" aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                </span>
+                Отвечаем роликом
+              </p>
+            </div>
+            <p class="seg__note">{s.note}</p>
+          </div>
+        </div>
+      ))
+    }
+
+    <div class="seg__geo">
+      <span class="seg__label">{segments.geoLabel}</span>
+      <ul class="seg__geo-list" role="list">
+        {segments.geo.map((g) => <li>{g}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .segments {
+    padding: clamp(110px, 13vw, 180px) 0 clamp(90px, 11vw, 150px);
+    overflow: hidden;
+    background:
+      radial-gradient(60% 50% at 90% 10%, rgba(211, 250, 106, 0.1), transparent 70%),
+      var(--ink);
+  }
+  .segments__head {
+    display: grid;
+    gap: 18px;
+  }
+  @media (min-width: 900px) {
+    .segments__head {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.7fr);
+      align-items: end;
+      gap: 48px;
+    }
+  }
+  .segments__text {
+    max-width: 40ch;
+    font-size: clamp(16px, 1.3vw, 18px);
+    line-height: 1.5;
+    color: rgba(245, 242, 235, 0.72);
+  }
+
+  /* ── Вкладки ───────────────────────────── */
+  .seg__tabs {
+    display: flex;
+    gap: 8px;
+    margin-top: clamp(36px, 4vw, 56px);
+    padding: 6px;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-radius: 999px;
+    background: rgba(245, 242, 235, 0.06);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .seg__tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .seg__tab {
+    flex: none;
+    min-height: 48px;
+    padding: 0 22px;
+    border-radius: 999px;
+    color: rgba(245, 242, 235, 0.8);
+    font-weight: 600;
+    font-size: 15px;
+    white-space: nowrap;
+    transition:
+      background-color 0.35s var(--ease),
+      color 0.35s var(--ease);
+  }
+  @media (hover: hover) {
+    .seg__tab:not(.is-active):hover {
+      background: rgba(245, 242, 235, 0.08);
+      color: var(--paper);
+    }
+  }
+  .seg__tab.is-active {
+    background: var(--lime);
+    color: var(--ink);
+  }
+  .seg__tab:focus-visible {
+    outline: 2px solid var(--lime);
+    outline-offset: 2px;
+  }
+  /* На телефоне три равные вкладки: текст переносится, ничего не уезжает за край */
+  @media (max-width: 560px) {
+    .seg__tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+      width: 100%;
+      border-radius: 22px;
+    }
+    .seg__tab {
+      min-height: 52px;
+      padding: 6px 8px;
+      border-radius: 17px;
+      font-size: 13px;
+      line-height: 1.15;
+      white-space: normal;
+    }
+  }
+  html:not(.js) .seg__tabs {
+    display: none;
+  }
+
+  /* ── Панель вкладки ────────────────────── */
+  .seg__panel {
+    display: grid;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  @media (min-width: 1000px) {
+    .seg__panel {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: clamp(20px, 2vw, 28px);
+    }
+  }
+  html.js .seg__panel:not(.is-active) {
+    display: none;
+  }
+  .seg__nojs-title {
+    display: none;
+  }
+  html:not(.js) .seg__nojs-title {
+    display: block;
+    margin-bottom: 14px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -0.03em;
+    color: var(--lime);
+  }
+  html:not(.js) .seg__panel + .seg__panel {
+    margin-top: 40px;
+  }
+
+  .seg__main,
+  .seg__chat {
+    min-width: 0;
+    padding: clamp(24px, 3vw, 44px);
+    border-radius: var(--radius-l);
+  }
+  .seg__main {
+    background: linear-gradient(180deg, var(--graphite-2), var(--graphite));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  .seg__lead {
+    max-width: 30ch;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(22px, 2.3vw, 34px);
+    line-height: 1.18;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .seg__label {
+    display: block;
+    margin-top: clamp(26px, 3vw, 40px);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--smoke);
+  }
+  .seg__chat .seg__label {
+    margin-top: 0;
+    color: #4d5350;
+  }
+  .seg__shoot {
+    display: grid;
+    gap: 0;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 640px) {
+    .seg__shoot {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 28px;
+    }
+  }
+  .seg__shoot li {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 16px;
+    line-height: 1.4;
+  }
+  .seg__shoot span {
+    flex: none;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--lime);
+  }
+
+  /* Переписка: вопросы клиентов и наш ответ */
+  .seg__chat {
+    display: flex;
+    flex-direction: column;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .seg__bubbles {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .seg__bubble {
+    max-width: 88%;
+    padding: 14px 20px;
+    border-radius: 22px 22px 22px 6px;
+    background: #fff;
+    box-shadow: 0 10px 24px -14px rgba(16, 20, 20, 0.35);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.35;
+  }
+  .seg__bubble--answer {
+    align-self: flex-end;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 6px;
+    border-radius: 22px 22px 6px 22px;
+    background: linear-gradient(180deg, #e2ff8f, var(--lime) 60%, #c6ec58);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      inset 0 -3px 0 rgba(120, 150, 30, 0.3),
+      0 12px 24px -14px rgba(90, 120, 20, 0.6);
+    font-weight: 700;
+  }
+  .seg__typing {
+    display: inline-flex;
+    gap: 4px;
+  }
+  .seg__typing i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink);
+    animation: seg-dot 1.2s ease-in-out infinite;
+  }
+  .seg__typing i:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .seg__typing i:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  @keyframes seg-dot {
+    0%,
+    60%,
+    100% {
+      opacity: 0.35;
+      translate: 0 0;
+    }
+    30% {
+      opacity: 1;
+      translate: 0 -3px;
+    }
+  }
+  .seg__note {
+    margin-top: auto;
+    padding-top: 22px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: #4d5350;
+  }
+
+  /* ── География ──────────────────────────── */
+  .seg__geo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 18px;
+    margin-top: clamp(28px, 3vw, 40px);
+  }
+  .seg__geo .seg__label {
+    margin: 0;
+  }
+  .seg__geo-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .seg__geo-list li {
+    padding: 9px 16px;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px var(--line);
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .seg__geo-list li:last-child {
+    color: var(--smoke);
+  }
+</style>

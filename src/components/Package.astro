@@ -1,56 +1,107 @@
 ---
+// Услуги: три продукта и отдельные услуги. Весь текст — в site.services.
 import { site, marked } from '../content/site';
-const { package: pkg } = site;
+const { services } = site;
 import BgText from './BgText.astro';
 import Floats from './Floats.astro';
 ---
 
-<section class="deco-host package" id="package">
-  <BgText text="50 REELS" bottom="-4%" align="end" solid />
+<section class="deco-host services" id="services">
+  <BgText text="REELS · SMM" bottom="-4%" align="end" solid />
   <Floats
     frames={[
-      { x: '84%', y: '10%', w: 60, r: 12, kind: 'lime', speed: 0.6 },
-      { x: '72%', y: '4%', w: 40, r: -8, kind: 'line', speed: 0.3, hideMobile: true },
+      { x: '84%', y: '6%', w: 60, r: 12, kind: 'lime', speed: 0.6 },
+      { x: '72%', y: '2%', w: 40, r: -8, kind: 'line', speed: 0.3, hideMobile: true },
     ]}
   />
 
   <div class="wrap">
-    <h2 class="section-title package__title" set:html={marked(pkg.title)} />
+    <div class="services__head">
+      <h2 class="section-title" set:html={marked(services.title)} />
+      <p class="services__text">{services.text}</p>
+    </div>
 
-    <ul class="package__list" role="list">
+    <ul class="services__list" role="list">
       {
-        pkg.items.map((item, i) => (
-          <li class={`card ${i === 1 ? 'card--lime' : ''}`} data-card>
-            <span class={`card__big ${item.big.length > 2 ? 'card__big--word' : ''}`}>{item.big}</span>
-            <h3 class="card__title">{item.title}</h3>
-            <p class="card__text">{item.text}</p>
+        services.items.map((item) => (
+          <li class={`svc ${item.accent ? 'svc--lime' : ''}`} data-card>
+            <div class="svc__top">
+              <span class="svc__n">{item.n}</span>
+              <span class="svc__tag">{item.tag}</span>
+            </div>
+            <span class={`svc__big ${item.big.length > 6 ? 'svc__big--word' : ''}`}>{item.big}</span>
+            <h3 class="svc__title">{item.title}</h3>
+            <ul class="svc__points" role="list">
+              {item.points.map((p) => <li>{p}</li>)}
+            </ul>
+            <p class="svc__price">
+              <span>Стоимость</span>
+              <b>{item.price}</b>
+            </p>
           </li>
         ))
       }
     </ul>
-    <p class="package__note">{pkg.note}</p>
+
+    <div class="extras">
+      <p class="extras__title">{services.extrasTitle}</p>
+      <ul class="extras__list" role="list">
+        {
+          services.extras.map((x) => (
+            <li class="extra">
+              <div class="extra__copy">
+                <h3 class="extra__name">{x.title}</h3>
+                <p class="extra__text">{x.text}</p>
+              </div>
+              <b class="extra__price">{x.price}</b>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <p class="services__note">{services.note}</p>
   </div>
 </section>
 
 <style>
-  .package {
+  .services {
     background: var(--paper);
-    padding: clamp(100px, 12vw, 170px) 0 clamp(60px, 7vw, 100px);
+    padding: clamp(100px, 12vw, 170px) 0 clamp(70px, 8vw, 120px);
   }
-  .package__list {
+  .services__head {
+    display: grid;
+    gap: 18px;
+  }
+  @media (min-width: 900px) {
+    .services__head {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.7fr);
+      align-items: end;
+      gap: 48px;
+    }
+  }
+  .services__text {
+    max-width: 42ch;
+    font-size: clamp(16px, 1.3vw, 18px);
+    line-height: 1.5;
+    color: #4d5350;
+  }
+
+  /* ── Карточки продуктов ────────────────── */
+  .services__list {
     display: grid;
     gap: 14px;
     margin: clamp(40px, 5vw, 64px) 0 0;
     padding: 0;
     list-style: none;
   }
-  @media (min-width: 800px) {
-    .package__list {
+  @media (min-width: 900px) {
+    .services__list {
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: clamp(14px, 1.6vw, 24px);
     }
   }
-  .card {
+  .svc {
     container-type: inline-size;
     display: flex;
     flex-direction: column;
@@ -61,46 +112,200 @@ import Floats from './Floats.astro';
     box-shadow: 0 1px 0 rgba(16, 20, 20, 0.04);
     transition:
       translate 0.5s var(--ease),
-      rotate 0.5s var(--ease);
+      rotate 0.5s var(--ease),
+      box-shadow 0.5s var(--ease);
   }
-  .card--lime {
+  .svc--lime {
     background: var(--lime);
   }
   @media (hover: hover) {
     /* translate/rotate отдельно от transform, чтобы не спорить с анимацией появления */
-    .card:hover {
+    .svc:hover {
       translate: 0 -6px;
       rotate: -0.6deg;
+      box-shadow: 0 30px 50px -30px rgba(16, 20, 20, 0.35);
     }
   }
-  .card__big {
+  .svc__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .svc__n {
+    display: inline-grid;
+    place-items: center;
+    min-width: 44px;
+    height: 30px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--lime);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: -0.02em;
+  }
+  .svc__tag {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #5c625e;
+  }
+  .svc--lime .svc__tag {
+    color: #2a302d;
+  }
+  .svc__big {
+    margin-top: clamp(26px, 3vw, 40px);
     font-family: var(--font-display);
     font-weight: 800;
     /* Размер от ширины карточки, чтобы слово всегда помещалось */
-    font-size: clamp(52px, 34cqi, 130px);
-    line-height: 0.85;
-    letter-spacing: -0.07em;
+    font-size: clamp(46px, 24cqi, 104px);
+    line-height: 0.9;
+    letter-spacing: -0.06em;
     white-space: nowrap;
   }
-  .card__big--word {
-    font-size: clamp(40px, 22cqi, 96px);
+  .svc__big--word {
+    font-size: clamp(36px, 15.5cqi, 76px);
   }
-  .card__title {
-    margin-top: clamp(20px, 3vw, 44px);
+  .svc__title {
+    margin-top: clamp(14px, 1.6vw, 22px);
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: clamp(19px, 1.7vw, 24px);
-    line-height: 1.15;
+    font-size: clamp(18px, 1.5vw, 22px);
+    line-height: 1.2;
     letter-spacing: -0.03em;
   }
-  .card__text {
-    margin-top: 10px;
-    color: #4d5350;
+  .svc__points {
+    display: grid;
+    gap: 10px;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
   }
-  .card--lime .card__text {
+  .svc__points li {
+    position: relative;
+    padding-left: 26px;
+    font-size: 15px;
+    line-height: 1.45;
+    color: #3f4542;
+  }
+  .svc__points li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.42em;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--lime)
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23101414' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / 10px no-repeat;
+  }
+  .svc--lime .svc__points li {
+    color: #1f2422;
+  }
+  .svc--lime .svc__points li::before {
+    background-color: var(--ink);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23D3FA6A' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+  .svc__price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 12px;
+    margin-top: auto;
+    padding-top: 24px;
+    border-top: 1px solid var(--line-dark);
+  }
+  /* Отступ над ценой; на компьютере цена прижата к низу, чтобы карточки были ровными */
+  .svc__points {
+    margin-bottom: 26px;
+  }
+  .svc__price span {
+    font-size: 14px;
+    color: #5c625e;
+  }
+  .svc--lime .svc__price span {
     color: #2a302d;
   }
-  .package__note {
+  .svc__price b {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(17px, 1.4vw, 20px);
+    letter-spacing: -0.03em;
+  }
+
+  /* ── Отдельные услуги ──────────────────── */
+  .extras {
+    margin-top: clamp(28px, 3vw, 40px);
+  }
+  .extras__title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #5c625e;
+  }
+  .extras__list {
+    display: grid;
+    gap: 12px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 900px) {
+    .extras__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(14px, 1.6vw, 24px);
+    }
+  }
+  .extra {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: clamp(20px, 2vw, 28px) clamp(22px, 2.4vw, 32px);
+    border-radius: 22px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .extra__copy {
+    min-width: 0;
+  }
+  .extra__name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(17px, 1.4vw, 20px);
+    letter-spacing: -0.03em;
+  }
+  .extra__text {
+    margin-top: 4px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: rgba(245, 242, 235, 0.7);
+  }
+  .extra__price {
+    flex: none;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: var(--lime);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+  @media (max-width: 520px) {
+    .extra {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  .services__note {
     margin-top: 24px;
     max-width: 60ch;
     font-size: 14px;

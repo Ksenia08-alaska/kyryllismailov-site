@@ -32,6 +32,7 @@ import { initFaq } from './faq';
 import { initAbout } from './about';
 import { initLightbox } from './lightbox';
 import { initStickyCta } from './sticky-cta';
+import { initSegments } from './segments';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -51,6 +52,7 @@ async function start() {
   initShader(reduced);
   initCalc(reduced);
   initFaq(reduced);
+  initSegments(reduced);
   initLightbox();
   initProof(reduced);
   initPlayers();

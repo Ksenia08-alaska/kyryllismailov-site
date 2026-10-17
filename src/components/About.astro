@@ -6,7 +6,7 @@ import BgText from './BgText.astro';
 import Floats from './Floats.astro';
 ---
 
-<section class="deco-host about sage" id="about">
+<section class="deco-host about sage sheet" id="about">
   <span class="deco dots" style="--dx:85%;--dy:25%" aria-hidden="true"></span>
   <BgText text="живые ролики" top="6%" />
   <Floats
@@ -25,10 +25,31 @@ import Floats from './Floats.astro';
         {about.points.map((p) => <li>{p}</li>)}
       </ul>
 
-      <a href={site.instagram} target="_blank" rel="noopener" class="about__blog">
-        <span>{about.blogLink}</span>
-        <b>{site.handle}</b>
-      </a>
+      <p class="about__blogs-label">{about.blogsLabel}</p>
+      <ul class="about__blogs" role="list">
+        {
+          about.blogs.map((b) => {
+            const Tag = b.url ? 'a' : 'div';
+            return (
+              <li>
+                <Tag
+                  class={`about__blog ${b.url ? 'is-link' : ''}`}
+                  {...(b.url ? { href: b.url, target: '_blank', rel: 'noopener' } : {})}
+                >
+                  <span class="about__blog-name">{b.name}</span>
+                  {b.handle && <b>{b.handle}</b>}
+                  <span class="about__blog-text">{b.text}</span>
+                  {b.url && (
+                    <svg class="about__blog-arrow" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M7 17 17 7M9 7h8v8" />
+                    </svg>
+                  )}
+                </Tag>
+              </li>
+            );
+          })
+        }
+      </ul>
     </div>
 
     <!-- Видео Кирилла на лаймовой подложке -->
@@ -90,29 +111,75 @@ import Floats from './Floats.astro';
     background: var(--ink);
   }
 
+  /* ── Два блога Кирилла ─────────────────── */
+  .about__blogs-label {
+    margin-top: 34px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #4d5350;
+  }
+  .about__blogs {
+    display: grid;
+    gap: 10px;
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 560px) {
+    .about__blogs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
   .about__blog {
-    display: inline-flex;
+    position: relative;
+    display: flex;
     flex-direction: column;
-    gap: 2px;
-    margin-top: 32px;
-    padding: 14px 20px;
-    border-radius: 18px;
+    gap: 4px;
+    height: 100%;
+    padding: 18px 20px 20px;
+    border-radius: 20px;
     background: var(--paper);
     transition:
       background-color 0.3s,
       translate 0.4s var(--ease);
   }
-  .about__blog span {
-    font-size: 13px;
-    color: #4d5350;
+  .about__blog-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: -0.03em;
   }
   .about__blog b {
-    font-size: 18px;
+    font-size: 15px;
+  }
+  .about__blog-text {
+    margin-top: 4px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #4d5350;
+  }
+  .about__blog-arrow {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: translate 0.4s var(--ease);
   }
   @media (hover: hover) {
-    .about__blog:hover {
+    .about__blog.is-link:hover {
       background: var(--lime);
       translate: 0 -3px;
+    }
+    .about__blog.is-link:hover .about__blog-arrow {
+      translate: 2px -2px;
     }
   }
 

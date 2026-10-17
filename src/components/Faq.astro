@@ -33,7 +33,6 @@ import BgText from './BgText.astro';
               role="region"
               aria-labelledby={`faq-q-${i}`}
               data-faq-panel
-              hidden
             >
               <p>{item.a}</p>
             </div>
@@ -45,6 +44,10 @@ import BgText from './BgText.astro';
 </section>
 
 <style>
+  /* Ответы видны без JS (и поисковикам); с JS скрываются до клика */
+  :global(html.js) .faq__a:not(.is-ready) {
+    display: none;
+  }
   .faq {
     background: var(--paper);
     padding: clamp(80px, 10vw, 140px) 0 clamp(96px, 12vw, 170px);
