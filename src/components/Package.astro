@@ -6,7 +6,7 @@ import BgText from './BgText.astro';
 import Floats from './Floats.astro';
 ---
 
-<section class="deco-host services" id="services">
+<section class="deco-host services dark sheet" id="services">
   <BgText text="REELS · SMM" bottom="-4%" align="end" solid />
   <Floats
     frames={[
@@ -24,7 +24,8 @@ import Floats from './Floats.astro';
     <ul class="services__list" role="list">
       {
         services.items.map((item) => (
-          <li class={`svc ${item.accent ? 'svc--lime' : ''}`} data-card>
+          <li class={`svc ${item.accent ? 'svc--lime' : ''}`} data-card data-for={item.for.join(' ')}>
+            <span class="svc__rec">{services.recommended}</span>
             <div class="svc__top">
               <span class="svc__n">{item.n}</span>
               <span class="svc__tag">{item.tag}</span>
@@ -48,7 +49,7 @@ import Floats from './Floats.astro';
       <ul class="extras__list" role="list">
         {
           services.extras.map((x) => (
-            <li class="extra">
+            <li class="extra" data-for={x.for.join(' ')}>
               <div class="extra__copy">
                 <h3 class="extra__name">{x.title}</h3>
                 <p class="extra__text">{x.text}</p>
@@ -66,7 +67,7 @@ import Floats from './Floats.astro';
 
 <style>
   .services {
-    background: var(--paper);
+    background: var(--ink);
     padding: clamp(100px, 12vw, 170px) 0 clamp(70px, 8vw, 120px);
   }
   .services__head {
@@ -84,7 +85,7 @@ import Floats from './Floats.astro';
     max-width: 42ch;
     font-size: clamp(16px, 1.3vw, 18px);
     line-height: 1.5;
-    color: #4d5350;
+    color: rgba(245, 242, 235, 0.72);
   }
 
   /* ── Карточки продуктов ────────────────── */
@@ -102,7 +103,9 @@ import Floats from './Floats.astro';
     }
   }
   .svc {
+    position: relative;
     container-type: inline-size;
+    color: var(--ink);
     display: flex;
     flex-direction: column;
     min-width: 0;
@@ -113,7 +116,9 @@ import Floats from './Floats.astro';
     transition:
       translate 0.5s var(--ease),
       rotate 0.5s var(--ease),
-      box-shadow 0.5s var(--ease);
+      box-shadow 0.5s var(--ease),
+      opacity 0.45s var(--ease),
+      filter 0.45s var(--ease);
   }
   .svc--lime {
     background: var(--lime);
@@ -247,7 +252,7 @@ import Floats from './Floats.astro';
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #5c625e;
+    color: var(--smoke);
   }
   .extras__list {
     display: grid;
@@ -269,7 +274,8 @@ import Floats from './Floats.astro';
     gap: 18px;
     padding: clamp(20px, 2vw, 28px) clamp(22px, 2.4vw, 32px);
     border-radius: 22px;
-    background: var(--ink);
+    background: var(--graphite);
+    box-shadow: inset 0 0 0 1px var(--line);
     color: var(--paper);
   }
   .extra__copy {
@@ -309,6 +315,35 @@ import Floats from './Floats.astro';
     margin-top: 24px;
     max-width: 60ch;
     font-size: 14px;
-    color: #5c625e;
+    color: var(--smoke);
+  }
+  /* Метка «Подходит вам» — видна, когда выбран тип бизнеса и услуга ему подходит */
+  .svc__rec {
+    position: absolute;
+    top: -12px;
+    left: clamp(24px, 2.6vw, 36px);
+    display: none;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--lime);
+    color: var(--ink);
+    box-shadow: 0 0 0 3px var(--ink);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .svc--lime .svc__rec {
+    background: var(--paper);
+  }
+  :global(html[data-seg]) .svc.is-match .svc__rec {
+    display: inline-block;
+  }
+  :global(html[data-seg]) .svc.is-match {
+    box-shadow: 0 0 0 3px var(--lime);
+  }
+  :global(html[data-seg]) .svc--lime.is-match {
+    box-shadow: 0 0 0 3px var(--paper);
+  }
+  :global(html[data-seg]) .extra.is-match {
+    box-shadow: inset 0 0 0 2px var(--lime);
   }
 </style>

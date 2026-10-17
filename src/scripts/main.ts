@@ -32,7 +32,7 @@ import { initFaq } from './faq';
 import { initAbout } from './about';
 import { initLightbox } from './lightbox';
 import { initStickyCta } from './sticky-cta';
-import { initSegments } from './segments';
+import { initFilter } from './filter';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -48,11 +48,11 @@ async function start() {
   const lenis = reduced ? null : initSmoothScroll();
 
   initAnalytics();
+  initFilter(lenis, reduced);
   initMenu(lenis);
   initShader(reduced);
   initCalc(reduced);
   initFaq(reduced);
-  initSegments(reduced);
   initLightbox();
   initProof(reduced);
   initPlayers();

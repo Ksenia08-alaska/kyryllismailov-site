@@ -1,0 +1,46 @@
+---
+// Иконки типов бизнеса: чашка (кафе), ключ (отель), пакет (другой бизнес). Тонкая линия, цвет — currentColor.
+interface Props {
+  name: string;
+  size?: number;
+}
+const { name, size = 22 } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.8"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  {
+    name === 'cup' && (
+      <>
+        <path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9Z" />
+        <path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16" />
+        <path d="M8 3.5c0 1 1 1.5 1 2.5M12 3.5c0 1 1 1.5 1 2.5" />
+      </>
+    )
+  }
+  {
+    name === 'key' && (
+      <>
+        <circle cx="8" cy="15" r="4" />
+        <path d="m11 12 8-8M16 7l2 2M14 9l2 2" />
+      </>
+    )
+  }
+  {
+    name === 'bag' && (
+      <>
+        <path d="M5 8h14l-1 12H6L5 8Z" />
+        <path d="M9 8V6a3 3 0 0 1 6 0v2" />
+      </>
+    )
+  }
+</svg>

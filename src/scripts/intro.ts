@@ -39,7 +39,7 @@ export function runIntro(lenis: LenisInstance | null): Promise<void> {
     gsap.set(pre, { clipPath: 'inset(0% 0% 0% 0%)' });
 
     tl.to(counter, {
-      v: Number(pre.dataset.count) || 25,
+      v: Number(pre.dataset.reels) || 25,
       duration: 1.5,
       ease: 'power2.inOut',
       onUpdate: () => {
@@ -69,9 +69,12 @@ export function runIntro(lenis: LenisInstance | null): Promise<void> {
       { y: 0, rotation: 0, autoAlpha: 1, duration: 1.3, ease: 'expo.out' },
       '<0.15',
     )
-    .to(fades, { autoAlpha: 1, y: 0, duration: 1, ease: 'expo.out', stagger: 0.08 }, '<0.25')
-    .to(swoosh, { strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut' }, '<0.35')
-    .to(sticker, { scale: 1, rotation: 0, autoAlpha: 1, duration: 1, ease: 'back.out(1.8)' }, '<0.1');
+    .to(fades, { autoAlpha: 1, y: 0, duration: 1, ease: 'expo.out', stagger: 0.08 }, '<0.25');
+  // Росчерк под ценой есть не во всех версиях первого экрана
+  if (swoosh) tl.to(swoosh, { strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut' }, '<0.35');
+  if (sticker) {
+    tl.to(sticker, { scale: 1, rotation: 0, autoAlpha: 1, duration: 1, ease: 'back.out(1.8)' }, swoosh ? '<0.1' : '<0.45');
+  }
 
   return new Promise((resolve) => {
     tl.eventCallback('onComplete', () => {

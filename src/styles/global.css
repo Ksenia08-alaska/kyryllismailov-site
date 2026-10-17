@@ -485,3 +485,23 @@ html:not(.js) .section-title mark.hl {
     animation: none;
   }
 }
+
+/* ── Фильтр «Какой у вас бизнес?» ─────────────
+   Когда выбран тип бизнеса (html[data-seg]), неподходящие услуги и цены
+   слегка приглушаются, подходящие подсвечиваются в своих компонентах. */
+[data-for] {
+  transition:
+    opacity 0.45s var(--ease),
+    filter 0.45s var(--ease),
+    box-shadow 0.45s var(--ease);
+}
+html[data-seg] [data-for].is-dim {
+  opacity: 0.42;
+  filter: saturate(0.4);
+}
+@media (hover: hover) {
+  html[data-seg] [data-for].is-dim:hover {
+    opacity: 0.85;
+    filter: none;
+  }
+}

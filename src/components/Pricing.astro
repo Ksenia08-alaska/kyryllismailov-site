@@ -32,7 +32,7 @@ import Floats from './Floats.astro';
       <dl class="pricing__list">
         {
           pricing.list.map((row) => (
-            <div class="pricing__row">
+            <div class="pricing__row" data-for={row.for.join(' ')}>
               <dt>{row.name}</dt>
               <dd>{row.value}</dd>
             </div>
@@ -164,6 +164,14 @@ import Floats from './Floats.astro';
   }
   .pricing__row dt {
     font-weight: 600;
+  }
+  /* Подходящая строка при выбранном типе бизнеса */
+  :global(html[data-seg]) .pricing__row.is-match {
+    margin-inline: -12px;
+    padding-inline: 12px;
+    border-radius: 12px;
+    background: var(--paper);
+    border-bottom-color: transparent;
   }
   .pricing__row dd {
     margin: 0;
